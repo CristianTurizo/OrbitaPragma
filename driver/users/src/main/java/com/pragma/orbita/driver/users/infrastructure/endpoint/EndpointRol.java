@@ -5,10 +5,17 @@ import com.pragma.orbita.driver.users.application.DTORespuesta.RolDTORespuesta;
 import com.pragma.orbita.driver.users.application.service.RolService;
 import com.pragma.orbita.driver.users.domain.respuesta.ObjetoRespuestaDomain;
 import com.pragma.orbita.driver.users.infrastructure.respuesta.ObjetoRespuestaInfrastructure;
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.constraints.NotNull;
 import java.util.List;
@@ -16,53 +23,53 @@ import java.util.List;
 @RestController
 @RequestMapping("rol")
 @Validated
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class EndpointRol {
-    
-    private RolService rolService;
+
+    private final RolService rolService;
+
+    @PostMapping
+    public ObjetoRespuestaInfrastructure<RolDTORespuesta> guardarRol(@NotNull @RequestBody RolDTOConsulta rolDTOConsulta) {
+        ObjetoRespuestaDomain<RolDTORespuesta> rol = rolService.guardarRol(rolDTOConsulta);
+
+        return rol.getDato() == null
+                ? new ObjetoRespuestaInfrastructure<>(HttpStatus.CONFLICT, null, rol.getMessage())
+                : new ObjetoRespuestaInfrastructure<>(HttpStatus.CREATED, rol.getDato(), rol.getMessage());
+    }
 
     @GetMapping("/{idRol}")
-    public ObjetoRespuestaInfrastructure<RolDTORespuesta> buscarRolPorId(@NotNull @PathVariable int idRol){
-        ObjetoRespuestaDomain<RolDTORespuesta> Rol = rolService.buscarRolPorId(idRol);
-        if(Rol.getDato() == null){
-            return new ObjetoRespuestaInfrastructure<RolDTORespuesta>(HttpStatus.NOT_FOUND, null, Rol.getMessage());
-        }
-        return new ObjetoRespuestaInfrastructure<RolDTORespuesta>(HttpStatus.FOUND, Rol.getDato(), Rol.getMessage());
+    public ObjetoRespuestaInfrastructure<RolDTORespuesta> buscarRolPorId(@NotNull @PathVariable int idRol) {
+        ObjetoRespuestaDomain<RolDTORespuesta> rol = rolService.buscarRolPorId(idRol);
+
+        return rol.getDato() == null
+                ? new ObjetoRespuestaInfrastructure<>(HttpStatus.NOT_FOUND, null, rol.getMessage())
+                : new ObjetoRespuestaInfrastructure<>(HttpStatus.OK, rol.getDato(), rol.getMessage());
     }
 
-    @PostMapping("/guardar")
-    public ObjetoRespuestaInfrastructure<RolDTORespuesta> guardarRol(@NotNull @RequestBody RolDTOConsulta RolDTOConsulta){
-        ObjetoRespuestaDomain<RolDTORespuesta> Rol = rolService.guardarRol(RolDTOConsulta);
-        if(Rol.getDato() == null){
-            return new ObjetoRespuestaInfrastructure<RolDTORespuesta>(HttpStatus.CONFLICT, null, Rol.getMessage());
-        }
-        return new ObjetoRespuestaInfrastructure<RolDTORespuesta>(HttpStatus.CREATED, Rol.getDato(), Rol.getMessage());
+    @PutMapping
+    public ObjetoRespuestaInfrastructure<RolDTORespuesta> actualizarRol(@NotNull @RequestBody RolDTOConsulta rolDTOConsulta) {
+        ObjetoRespuestaDomain<RolDTORespuesta> rol = rolService.actualizarRol(rolDTOConsulta);
+
+        return rol.getDato() == null
+                ? new ObjetoRespuestaInfrastructure<>(HttpStatus.CONFLICT, null, rol.getMessage())
+                : new ObjetoRespuestaInfrastructure<>(HttpStatus.OK, rol.getDato(), rol.getMessage());
     }
 
-    @PutMapping("/actualizar")
-    public ObjetoRespuestaInfrastructure<RolDTORespuesta> actualizarRol(@NotNull @RequestBody RolDTOConsulta RolDTOConsulta){
-        ObjetoRespuestaDomain<RolDTORespuesta> Rol = rolService.actualizarRol(RolDTOConsulta);
-        if(Rol.getDato() == null){
-            return new ObjetoRespuestaInfrastructure<RolDTORespuesta>(HttpStatus.CONFLICT, null, Rol.getMessage());
-        }
-        return new ObjetoRespuestaInfrastructure<RolDTORespuesta>(HttpStatus.OK, Rol.getDato(), Rol.getMessage());
+    @DeleteMapping("/{idRol}")
+    public ObjetoRespuestaInfrastructure<Object> eliminarRolPorId(@NotNull @PathVariable int idRol) {
+        ObjetoRespuestaDomain<Object> rol = rolService.eliminarRolById(idRol);
+
+        return rol.getDato() == null
+                ? new ObjetoRespuestaInfrastructure<>(HttpStatus.CONFLICT, null, rol.getMessage())
+                : new ObjetoRespuestaInfrastructure<>(HttpStatus.OK, rol.getDato(), rol.getMessage());
     }
 
-    @PutMapping("/eliminar/{idRol}")
-    public ObjetoRespuestaInfrastructure<Object> eliminarRolPorId(@NotNull @PathVariable int idRol){
-        ObjetoRespuestaDomain<Object> Rol = rolService.eliminarRolById(idRol);
-        if(Rol.getDato() == null){
-            return new ObjetoRespuestaInfrastructure<Object>(HttpStatus.CONFLICT, null, Rol.getMessage());
-        }
-        return new ObjetoRespuestaInfrastructure<Object>(HttpStatus.OK, Rol.getDato(), Rol.getMessage());
-    }
+    @GetMapping("/all")
+    public ObjetoRespuestaInfrastructure<List<RolDTORespuesta>> buscarRolPorId() {
+        ObjetoRespuestaDomain<List<RolDTORespuesta>> rol = rolService.obtenerTodosRol();
 
-    @GetMapping("/todas")
-    public ObjetoRespuestaInfrastructure<List<RolDTORespuesta>> buscarRolPorId(){
-        ObjetoRespuestaDomain<List<RolDTORespuesta>> Rol = rolService.obtenerTodosRol();
-        if(Rol.getDato() == null){
-            return new ObjetoRespuestaInfrastructure<List<RolDTORespuesta>>(HttpStatus.NOT_FOUND, null, Rol.getMessage());
-        }
-        return new ObjetoRespuestaInfrastructure<List<RolDTORespuesta>>(HttpStatus.FOUND, Rol.getDato(), Rol.getMessage());
+        return rol.getDato() == null
+                ? new ObjetoRespuestaInfrastructure<>(HttpStatus.NOT_FOUND, null, rol.getMessage())
+                : new ObjetoRespuestaInfrastructure<>(HttpStatus.FOUND, rol.getDato(), rol.getMessage());
     }
 }

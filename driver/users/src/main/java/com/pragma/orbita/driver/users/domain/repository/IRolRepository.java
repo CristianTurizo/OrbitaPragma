@@ -9,7 +9,7 @@ public interface IRolRepository {
 
     Optional<Rol> getRolById(int idRol);
 
-    Rol guardarRol(Rol Rol);
+    Rol guardarRol(Rol rol);
 
     Boolean existeRolById(int idRol);
 
