@@ -6,10 +6,10 @@ import java.util.Optional;
 import java.util.stream.Stream;
 
 public interface IUsuarioRepository {
-    
-    Optional<Usuario> getUsuarioById(int idUsuario);
 
-    Usuario guardarUsuario(Usuario Usuario);
+    Usuario guardarUsuario(Usuario usuario);
+
+    Optional<Usuario> getUsuarioById(int idUsuario);
 
     Boolean existeUsuarioById(int idUsuario);
 

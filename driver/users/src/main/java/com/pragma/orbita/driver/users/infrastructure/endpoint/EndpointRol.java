@@ -64,7 +64,7 @@ public class EndpointRol {
                 : new ObjetoRespuestaInfrastructure<>(HttpStatus.OK, rol.getDato(), rol.getMessage());
     }
 
-    @GetMapping("/all")
+    @GetMapping
     public ObjetoRespuestaInfrastructure<List<RolDTORespuesta>> buscarRolPorId() {
         ObjetoRespuestaDomain<List<RolDTORespuesta>> rol = rolService.obtenerTodosRol();
 

@@ -22,10 +22,10 @@ public class UsuarioEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_usuario", nullable = false)
     private int idUsuario;
-
     private String nombres;
     private String apellidos;
     private String documento;
+
     @Column(name = "tipo_documento")
     private String tipoDocumento;
     private String email;
