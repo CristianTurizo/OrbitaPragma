@@ -7,8 +7,7 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class RolDTORespuesta {
-    private int idRol;
+public class RolDtoRespuesta {
     private String nombre;
     private String descripcion;
 }

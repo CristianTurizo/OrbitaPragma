@@ -1,7 +1,6 @@
 package com.pragma.orbita.driver.users.application.service;
 
 import com.pragma.orbita.driver.users.application.DTOConsulta.UsuarioDtoConsulta;
-import com.pragma.orbita.driver.users.application.DTORespuesta.UsuarioDTORespuesta;
 import com.pragma.orbita.driver.users.application.DTORespuesta.UsuarioRolDtoRespuesta;
 import com.pragma.orbita.driver.users.application.mapper.mapInterface.IRolMapper;
 import com.pragma.orbita.driver.users.application.mapper.mapInterface.IUsuarioMapper;
@@ -15,18 +14,14 @@ import com.pragma.orbita.driver.users.domain.usecase.UsuarioUseCase;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
-
 @Service
 @RequiredArgsConstructor
 public class UsuarioRolService {
 
+    private final IUsuarioMapper usuarioMapper;
+    private final IRolMapper rolMapper;
     private final UsuarioRolUseCase usuarioRolUseCase;
-
     private final UsuarioUseCase usuarioUseCase;
-
     private final RolUseCase rolUseCase;
 
     public ObjetoRespuestaDomain<UsuarioRolDtoRespuesta> guardarUsuario(UsuarioDtoConsulta usuarioDtoConsulta) {
@@ -34,73 +29,42 @@ public class UsuarioRolService {
         if (!rolUseCase.existeRolById(rol))
             return new ObjetoRespuestaDomain<>(null, "No existe el rol que quiere asociar");
 
-        Usuario usuario = IUsuarioMapper.INSTANCE.consultaDtoToUsuario(usuarioDtoConsulta);
-        ObjetoRespuestaDomain<Usuario> respuestaUsuario = usuarioUseCase.guardarUsuario(usuario);
-        if (respuestaUsuario.getDato() == null)
-            return new ObjetoRespuestaDomain<>(null, respuestaUsuario.getMessage());
+        Usuario respuestaUsuario = usuarioUseCase.guardarUsuario(
+                usuarioMapper.consultaDtoToUsuario(usuarioDtoConsulta));
+        if (respuestaUsuario == null)
+            return new ObjetoRespuestaDomain<>(null, "No se pudo guardar el usuario - Entidad");
 
         UsuarioRol usuarioRol = UsuarioRol.builder()
-                .idUsuario(respuestaUsuario.getDato().getIdUsuario())
+                .idUsuario(respuestaUsuario.getIdUsuario())
                 .idRol(rol)
                 .build();
-        ObjetoRespuestaDomain<UsuarioRol> respuestaUsuarioRol = usuarioRolUseCase.guardarUsuarioRol(usuarioRol);
-        if (respuestaUsuarioRol.getDato() == null)
-            return new ObjetoRespuestaDomain<>(null, respuestaUsuarioRol.getMessage());
+
+        UsuarioRol respuestaUsuarioRol = usuarioRolUseCase.guardarUsuarioRol(usuarioRol);
+        if (respuestaUsuarioRol == null)
+            return new ObjetoRespuestaDomain<>(null, "No se pudo guardar el usuario - Relacion");
 
         UsuarioRolDtoRespuesta usuarioRolDtoRespuesta = UsuarioRolDtoRespuesta.builder()
-                .usuario(IUsuarioMapper.INSTANCE.
-                        usuarioToDtoRespuesta(respuestaUsuario.getDato()))
-                .rol(IRolMapper.INSTANCE
-                        .rolToDtoRespuesta(rolUseCase.getRolById(rol).getDato()))
+                .usuario(usuarioMapper.usuarioToDtoRespuesta(respuestaUsuario))
+                .rol(rolMapper.rolToDtoRespuesta(rolUseCase.getRolById(rol)))
                 .build();
 
-        return  new ObjetoRespuestaDomain<>(usuarioRolDtoRespuesta, respuestaUsuarioRol.getMessage());
+        return new ObjetoRespuestaDomain<>(usuarioRolDtoRespuesta, "Creado con exito");
     }
 
     public ObjetoRespuestaDomain<UsuarioRolDtoRespuesta> buscarUsuarioPorId(int idUsuario) {
-        ObjetoRespuestaDomain<UsuarioRol> usuarioRol = usuarioRolUseCase.obtenerPorUsuario(idUsuario);
-        if (usuarioRol.getDato() == null)
-            return new ObjetoRespuestaDomain<>(null, usuarioRol.getMessage());
+        Usuario respuestaUsuario = usuarioUseCase.getUsuarioById(idUsuario);
+        if (respuestaUsuario == null)
+            return new ObjetoRespuestaDomain<>(null, "No se encontro usuario");
 
-        ObjetoRespuestaDomain<Usuario> respuestaUsuario = usuarioUseCase.getUsuarioById(usuarioRol.getDato().getIdUsuario());
-        ObjetoRespuestaDomain<Rol> respuestaRol = rolUseCase.getRolById(usuarioRol.getDato().getIdRol());
+        UsuarioRol usuarioRol = usuarioRolUseCase.obtenerPorUsuario(respuestaUsuario.getIdUsuario());
+        Rol respuestaRol = rolUseCase.getRolById(usuarioRol.getIdRol());
 
         UsuarioRolDtoRespuesta usuarioRolDtoRespuesta = UsuarioRolDtoRespuesta.builder()
-                .usuario(IUsuarioMapper.INSTANCE.
-                        usuarioToDtoRespuesta(respuestaUsuario.getDato()))
-                .rol(IRolMapper.INSTANCE
-                        .rolToDtoRespuesta(respuestaRol.getDato()))
+                .usuario(usuarioMapper.usuarioToDtoRespuesta(respuestaUsuario))
+                .rol(rolMapper.rolToDtoRespuesta(respuestaRol))
                 .build();
 
         return new ObjetoRespuestaDomain<>(usuarioRolDtoRespuesta, "Usuario Encontrado");
     }
 
-    public ObjetoRespuestaDomain<UsuarioDTORespuesta> actualizarUsuario(UsuarioDtoConsulta usuarioDTOConsulta) {
-        Usuario usuario = IUsuarioMapper.INSTANCE.consultaDtoToUsuario(usuarioDTOConsulta);
-        ObjetoRespuestaDomain<Usuario> respuesta = usuarioUseCase.guardarUsuario(usuario);
-
-        return respuesta.getDato() == null
-                ? new ObjetoRespuestaDomain<>(null, "Ocurrió un error al actualizar los datos de la categoría")
-                : new ObjetoRespuestaDomain<>(
-                IUsuarioMapper.INSTANCE.usuarioToDtoRespuesta(respuesta.getDato()),
-                "Categoría actualizada con éxito");
-    }
-
-    public ObjetoRespuestaDomain<Integer> eliminarUsuarioById(int idUsuario) {
-        ObjetoRespuestaDomain<Integer> respuesta = usuarioUseCase.eliminarUsuarioById(idUsuario);
-
-        return respuesta.getDato() == null
-                ? new ObjetoRespuestaDomain<>(null, respuesta.getMessage())
-                : new ObjetoRespuestaDomain<>(idUsuario, respuesta.getMessage());
-    }
-
-    public ObjetoRespuestaDomain<List<UsuarioDTORespuesta>> obtenerTodasUsuarios() {
-        Stream<Usuario> usuarioStream = usuarioUseCase.obtenerTodasUsuarios().getDato();
-
-        List<UsuarioDTORespuesta> usuarios = usuarioStream
-                .map(IUsuarioMapper.INSTANCE::usuarioToDtoRespuesta)
-                .collect(Collectors.toList());
-
-        return new ObjetoRespuestaDomain<>(usuarios, "Listado");
-    }
 }

@@ -13,9 +13,7 @@ import javax.validation.constraints.NotNull;
 @NoArgsConstructor
 public class Rol {
     private int idRol;
-    @NotNull(message = "el campo nombre es requerido")
-    @NotEmpty(message = "el campo nombre es requerido")
-    @NotBlank(message = "el campo nombre no pueden ser espacios en blanco")
+    @NotBlank(message = "Debe tener un nombre valido")
     private String nombre;
     private String descripcion;
 }

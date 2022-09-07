@@ -19,18 +19,7 @@ public class RolUseCase {
     private final IRolRepository rolRepository;
     private final Validator validator;
 
-    public ObjetoRespuestaDomain<Rol> getRolById(int idRol) {
-        if (idRol <= 0)
-            return new ObjetoRespuestaDomain<>(null, "Id no válido");
-
-        Optional<Rol> rol = rolRepository.getRolById(idRol);
-
-        return rol.isEmpty()
-                ? new ObjetoRespuestaDomain<>(null, "La rol no existe en el sistema")
-                : new ObjetoRespuestaDomain<>(rol.get(), "Rol encontrado");
-    }
-
-    public ObjetoRespuestaDomain<Rol> guardarRol(Rol rol) {
+    public Rol guardarRol(Rol rol) {
         Set<ConstraintViolation<Rol>> validation = validator.validate(rol);
         if (!validation.isEmpty()) {
             StringBuilder errores = new StringBuilder("Datos no válidos.");
@@ -39,16 +28,22 @@ public class RolUseCase {
                 errores.append(x.getMessage());
                 errores.append(", ");
             });
-            return new ObjetoRespuestaDomain<>(null, errores.toString());
+            return null;
         }
 
-        Rol respuesta = rolRepository.guardarRol(rol);
-
-        return respuesta == null
-                ? new ObjetoRespuestaDomain<>(null, "Ocurrió un error al guardar el rol")
-                : new ObjetoRespuestaDomain<>(respuesta, "Rol agregado con éxito, id: " + respuesta.getIdRol());
+        return rolRepository.guardarRol(rol);
     }
 
+    public Rol getRolById(int idRol) {
+        if (idRol <= 0)
+            return null;
+
+        Optional<Rol> rol = rolRepository.getRolById(idRol);
+
+        return rol.isEmpty()
+                ? null
+                : rol.get();
+    }
 
     public ObjetoRespuestaDomain<Integer> eliminarRolById(int idRol) {
         if (idRol <= 0)

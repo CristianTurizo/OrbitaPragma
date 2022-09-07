@@ -1,17 +1,18 @@
 package com.pragma.orbita.driver.users.application.mapper.mapInterface;
 
 import com.pragma.orbita.driver.users.application.DTOConsulta.RolDTOConsulta;
-import com.pragma.orbita.driver.users.application.DTORespuesta.RolDTORespuesta;
+import com.pragma.orbita.driver.users.application.DTORespuesta.RolDtoRespuesta;
 import com.pragma.orbita.driver.users.domain.model.Rol;
 import org.mapstruct.Mapper;
-import org.mapstruct.factory.Mappers;
-@Mapper
+
+import java.util.List;
+
+@Mapper(componentModel = "spring")
 public interface IRolMapper {
-    IRolMapper INSTANCE = Mappers.getMapper(IRolMapper.class);
 
-    RolDTORespuesta rolToDtoRespuesta (Rol rol);
+    RolDtoRespuesta rolToDtoRespuesta(Rol rol);
 
-    Rol respuestaDtoToRol (RolDTORespuesta rolDTORespuesta);
+    Rol respuestaDtoToRol (RolDtoRespuesta rolDTORespuesta);
 
     RolDTOConsulta rolToDtoConsulta (Rol rol);
 

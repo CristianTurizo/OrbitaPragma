@@ -19,7 +19,7 @@ public class UsuarioUseCase {
     private final IUsuarioRepository usuarioRepository;
     private final Validator validator;
 
-    public ObjetoRespuestaDomain<Usuario> guardarUsuario(Usuario usuario) {
+    public Usuario guardarUsuario(Usuario usuario) {
         Set<ConstraintViolation<Usuario>> validation = validator.validate(usuario);
         if (!validation.isEmpty()) {
             StringBuilder errores = new StringBuilder("Datos no válidos.");
@@ -28,24 +28,20 @@ public class UsuarioUseCase {
                 errores.append(x.getMessage());
                 errores.append(", ");
             });
-            return new ObjetoRespuestaDomain<>(null, errores.toString());
+            return null;
         }
 
-        Usuario respuesta = usuarioRepository.guardarUsuario(usuario);
-        return respuesta == null
-                ? new ObjetoRespuestaDomain<>(null, "Ocurrió un error al guardar la categoría")
-                : new ObjetoRespuestaDomain<>(respuesta, "Usuario agregada con éxito, id: " + respuesta.getIdUsuario());
+        return usuarioRepository.guardarUsuario(usuario);
     }
 
-    public ObjetoRespuestaDomain<Usuario> getUsuarioById(int idUsuario) {
-        if (idUsuario <= 0) {
-            return new ObjetoRespuestaDomain<>(null, "Id no válido");
-        }
+    public Usuario getUsuarioById(int idUsuario) {
+        if (idUsuario <= 0)
+            return null;
 
         Optional<Usuario> usuario = usuarioRepository.getUsuarioById(idUsuario);
         return usuario.isEmpty()
-                ? new ObjetoRespuestaDomain<>(null, "La Usuario no existe en el sistema")
-                : new ObjetoRespuestaDomain<>(usuario.get(), "Usuario encontrada");
+                ? null
+                : usuario.get();
     }
 
     public boolean existeUsuarioById(int idUsuario) {

@@ -4,18 +4,15 @@ import com.pragma.orbita.driver.users.application.DTOConsulta.UsuarioDtoConsulta
 import com.pragma.orbita.driver.users.application.DTORespuesta.UsuarioDTORespuesta;
 import com.pragma.orbita.driver.users.domain.model.Usuario;
 import org.mapstruct.Mapper;
-import org.mapstruct.factory.Mappers;
 
-@Mapper
+@Mapper(componentModel = "spring")
 public interface IUsuarioMapper {
-    
-    IUsuarioMapper INSTANCE = Mappers.getMapper(IUsuarioMapper.class);
 
-    UsuarioDTORespuesta usuarioToDtoRespuesta(Usuario Usuario);
+    UsuarioDTORespuesta usuarioToDtoRespuesta(Usuario usuario);
 
-    Usuario respuestaDtoToUsuario(UsuarioDTORespuesta UsuarioDTORespuesta);
+    Usuario respuestaDtoToUsuario(UsuarioDTORespuesta usuarioDTORespuesta);
 
-    UsuarioDtoConsulta usuarioToDtoConsulta (Usuario Usuario);
+    UsuarioDtoConsulta usuarioToDtoConsulta(Usuario usuario);
 
-    Usuario consultaDtoToUsuario (UsuarioDtoConsulta UsuarioDTOConsulta);
+    Usuario consultaDtoToUsuario(UsuarioDtoConsulta usuarioDTOConsulta);
 }
