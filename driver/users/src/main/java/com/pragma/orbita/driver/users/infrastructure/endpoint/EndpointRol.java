@@ -56,8 +56,8 @@ public class EndpointRol {
     }
 
     @DeleteMapping("/{idRol}")
-    public ObjetoRespuestaInfrastructure<Object> eliminarRolPorId(@NotNull @PathVariable int idRol) {
-        ObjetoRespuestaDomain<Object> rol = rolService.eliminarRolById(idRol);
+    public ObjetoRespuestaInfrastructure<Integer> eliminarRolPorId(@NotNull @PathVariable int idRol) {
+        ObjetoRespuestaDomain<Integer> rol = rolService.eliminarRolById(idRol);
 
         return rol.getDato() == null
                 ? new ObjetoRespuestaInfrastructure<>(HttpStatus.CONFLICT, null, rol.getMessage())
@@ -70,6 +70,6 @@ public class EndpointRol {
 
         return rol.getDato() == null
                 ? new ObjetoRespuestaInfrastructure<>(HttpStatus.NOT_FOUND, null, rol.getMessage())
-                : new ObjetoRespuestaInfrastructure<>(HttpStatus.FOUND, rol.getDato(), rol.getMessage());
+                : new ObjetoRespuestaInfrastructure<>(HttpStatus.OK, rol.getDato(), rol.getMessage());
     }
 }

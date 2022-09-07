@@ -1,6 +1,6 @@
 package com.pragma.orbita.driver.users.application.mapper.mapInterface;
 
-import com.pragma.orbita.driver.users.application.DTOConsulta.UsuarioDTOConsulta;
+import com.pragma.orbita.driver.users.application.DTOConsulta.UsuarioDtoConsulta;
 import com.pragma.orbita.driver.users.application.DTORespuesta.UsuarioDTORespuesta;
 import com.pragma.orbita.driver.users.domain.model.Usuario;
 import org.mapstruct.Mapper;
@@ -15,7 +15,7 @@ public interface IUsuarioMapper {
 
     Usuario respuestaDtoToUsuario(UsuarioDTORespuesta UsuarioDTORespuesta);
 
-    UsuarioDTOConsulta usuarioToDtoConsulta (Usuario Usuario);
+    UsuarioDtoConsulta usuarioToDtoConsulta (Usuario Usuario);
 
-    Usuario consultaDtoToUsuario (UsuarioDTOConsulta UsuarioDTOConsulta);
+    Usuario consultaDtoToUsuario (UsuarioDtoConsulta UsuarioDTOConsulta);
 }

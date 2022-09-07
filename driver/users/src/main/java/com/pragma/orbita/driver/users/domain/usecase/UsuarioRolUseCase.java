@@ -1,7 +1,8 @@
 package com.pragma.orbita.driver.users.domain.usecase;
 
 import com.pragma.orbita.driver.users.domain.model.Usuario;
-import com.pragma.orbita.driver.users.domain.repository.IUsuarioRepository;
+import com.pragma.orbita.driver.users.domain.model.UsuarioRol;
+import com.pragma.orbita.driver.users.domain.repository.IUsuarioRolRepository;
 import com.pragma.orbita.driver.users.domain.respuesta.ObjetoRespuestaDomain;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -14,13 +15,14 @@ import java.util.stream.Stream;
 
 @Service
 @RequiredArgsConstructor
-public class UsuarioUseCase {
+public class UsuarioRolUseCase {
 
-    private final IUsuarioRepository usuarioRepository;
+    private final IUsuarioRolRepository usuarioRolRepository;
     private final Validator validator;
 
-    public ObjetoRespuestaDomain<Usuario> guardarUsuario(Usuario usuario) {
-        Set<ConstraintViolation<Usuario>> validation = validator.validate(usuario);
+
+    public ObjetoRespuestaDomain<UsuarioRol> guardarUsuarioRol(UsuarioRol usuarioRol) {
+        Set<ConstraintViolation<UsuarioRol>> validation = validator.validate(usuarioRol);
         if (!validation.isEmpty()) {
             StringBuilder errores = new StringBuilder("Datos no válidos.");
             errores.append("Errores: ");
@@ -31,28 +33,21 @@ public class UsuarioUseCase {
             return new ObjetoRespuestaDomain<>(null, errores.toString());
         }
 
-        Usuario respuesta = usuarioRepository.guardarUsuario(usuario);
+        UsuarioRol respuesta = usuarioRolRepository.guardarUsuarioRol(usuarioRol);
         return respuesta == null
                 ? new ObjetoRespuestaDomain<>(null, "Ocurrió un error al guardar la categoría")
-                : new ObjetoRespuestaDomain<>(respuesta, "Usuario agregada con éxito, id: " + respuesta.getIdUsuario());
+                : new ObjetoRespuestaDomain<>(respuesta, "Registro exitoso, id: " + respuesta.getIdUsuario());
     }
 
-    public ObjetoRespuestaDomain<Usuario> getUsuarioById(int idUsuario) {
+    public ObjetoRespuestaDomain<UsuarioRol> obtenerPorUsuario(int idUsuario) {
         if (idUsuario <= 0) {
             return new ObjetoRespuestaDomain<>(null, "Id no válido");
         }
 
-        Optional<Usuario> usuario = usuarioRepository.getUsuarioById(idUsuario);
+        Optional<UsuarioRol> usuario = usuarioRolRepository.obtenerPorUsuario(idUsuario);
         return usuario.isEmpty()
                 ? new ObjetoRespuestaDomain<>(null, "La Usuario no existe en el sistema")
                 : new ObjetoRespuestaDomain<>(usuario.get(), "Usuario encontrada");
-    }
-
-    public boolean existeUsuarioById(int idUsuario) {
-        if (idUsuario <= 0) {
-            return false;
-        }
-        return usuarioRepository.existeUsuarioById(idUsuario);
     }
 
     public ObjetoRespuestaDomain<Integer> eliminarUsuarioById(int idUsuario) {
@@ -62,18 +57,24 @@ public class UsuarioUseCase {
         if (!existeUsuarioById(idUsuario))
             return new ObjetoRespuestaDomain<>(idUsuario, "Esta categoría no se encuentra registrada en el sistema, nada que eliminar");
 
-        usuarioRepository.eliminarUsuarioById(idUsuario);
+        usuarioRolRepository.eliminarUsuarioRol(idUsuario);
 
         return existeUsuarioById(idUsuario)
                 ? new ObjetoRespuestaDomain<>(idUsuario, "Ocurrió un error al eliminar la categoría")
                 : new ObjetoRespuestaDomain<>(idUsuario, "Categoría eliminada con éxito");
-
     }
 
-    public ObjetoRespuestaDomain<Stream<Usuario>> obtenerTodasUsuarios() {
+    public ObjetoRespuestaDomain<Stream<UsuarioRol>> obtenerTodasUsuarios() {
         return new ObjetoRespuestaDomain<>(
-                usuarioRepository.obtenerTodosUsuarios(),
+                usuarioRolRepository.obtenerTodos(),
                 "Listado");
+    }
+
+    public boolean existeUsuarioById(int idUsuario) {
+        if (idUsuario <= 0) {
+            return false;
+        }
+        return usuarioRolRepository.existeUsuarioRol(idUsuario);
     }
 
 }

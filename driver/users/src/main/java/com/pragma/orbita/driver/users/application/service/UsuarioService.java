@@ -1,6 +1,6 @@
 package com.pragma.orbita.driver.users.application.service;
 
-import com.pragma.orbita.driver.users.application.DTOConsulta.UsuarioDTOConsulta;
+import com.pragma.orbita.driver.users.application.DTOConsulta.UsuarioDtoConsulta;
 import com.pragma.orbita.driver.users.application.DTORespuesta.UsuarioDTORespuesta;
 import com.pragma.orbita.driver.users.application.mapper.mapInterface.IUsuarioMapper;
 import com.pragma.orbita.driver.users.domain.model.Usuario;
@@ -19,15 +19,15 @@ public class UsuarioService {
 
     private final UsuarioUseCase usuarioUseCase;
 
-    public ObjetoRespuestaDomain<UsuarioDTORespuesta> guardarUsuario(UsuarioDTOConsulta usuarioDTOConsulta) {
+    public ObjetoRespuestaDomain<UsuarioDTORespuesta> guardarUsuario(UsuarioDtoConsulta usuarioDTOConsulta) {
         Usuario usuario = IUsuarioMapper.INSTANCE.consultaDtoToUsuario(usuarioDTOConsulta);
         ObjetoRespuestaDomain<Usuario> respuesta = usuarioUseCase.guardarUsuario(usuario);
 
         return respuesta.getDato() == null
                 ? new ObjetoRespuestaDomain<>(null, respuesta.getMessage())
                 : new ObjetoRespuestaDomain<>(
-                IUsuarioMapper.INSTANCE.usuarioToDtoRespuesta(respuesta.getDato()),
-                respuesta.getMessage());
+                        IUsuarioMapper.INSTANCE.usuarioToDtoRespuesta(respuesta.getDato()),
+                        respuesta.getMessage());
     }
 
     public ObjetoRespuestaDomain<UsuarioDTORespuesta> buscarUsuarioPorId(int idUsuario) {
@@ -40,7 +40,7 @@ public class UsuarioService {
                         respuesta.getMessage());
     }
 
-    public ObjetoRespuestaDomain<UsuarioDTORespuesta> actualizarUsuario(UsuarioDTOConsulta usuarioDTOConsulta) {
+    public ObjetoRespuestaDomain<UsuarioDTORespuesta> actualizarUsuario(UsuarioDtoConsulta usuarioDTOConsulta) {
         Usuario usuario = IUsuarioMapper.INSTANCE.consultaDtoToUsuario(usuarioDTOConsulta);
         ObjetoRespuestaDomain<Usuario> respuesta = usuarioUseCase.guardarUsuario(usuario);
 
@@ -51,13 +51,12 @@ public class UsuarioService {
                         "Categoría actualizada con éxito");
     }
 
-    public ObjetoRespuestaDomain<Object> eliminarUsuarioById(int idUsuario) {
-        ObjetoRespuestaDomain<Object> respuesta = usuarioUseCase.eliminarUsuarioById(idUsuario);
+    public ObjetoRespuestaDomain<Integer> eliminarUsuarioById(int idUsuario) {
+        ObjetoRespuestaDomain<Integer> respuesta = usuarioUseCase.eliminarUsuarioById(idUsuario);
 
-        if (respuesta.getDato() == null) {
-            return new ObjetoRespuestaDomain<>(null, respuesta.getMessage());
-        }
-        return new ObjetoRespuestaDomain<>(idUsuario, respuesta.getMessage());
+        return respuesta.getDato() == null
+                ? new ObjetoRespuestaDomain<>(null, respuesta.getMessage())
+                : new ObjetoRespuestaDomain<>(idUsuario, respuesta.getMessage());
     }
 
     public ObjetoRespuestaDomain<List<UsuarioDTORespuesta>> obtenerTodasUsuarios() {

@@ -50,17 +50,16 @@ public class RolUseCase {
     }
 
 
-    public ObjetoRespuestaDomain<Object> eliminarRolById(int idRol) {
+    public ObjetoRespuestaDomain<Integer> eliminarRolById(int idRol) {
         if (idRol <= 0)
             return new ObjetoRespuestaDomain<>(null, "Id no válido");
 
-        if (!existRolById(idRol)) {
+        if (!existeRolById(idRol))
             return new ObjetoRespuestaDomain<>(idRol, "Esta categoría no se encuentra registrada en el sistema, nada que eliminar");
-        }
 
         rolRepository.eliminarRolById(idRol);
 
-        return existRolById(idRol)
+        return existeRolById(idRol)
                 ? new ObjetoRespuestaDomain<>(idRol, "Ocurrió un error al eliminar la categoría")
                 : new ObjetoRespuestaDomain<>(idRol, "Categoría eliminada con éxito");
     }
@@ -71,7 +70,7 @@ public class RolUseCase {
                 "Listado");
     }
 
-    private boolean existRolById(int idRol) {
+    public boolean existeRolById(int idRol) {
         return rolRepository.existeRolById(idRol);
     }
 

@@ -51,8 +51,8 @@ public class RolService {
                         "Rol actualizado con éxito");
     }
 
-    public ObjetoRespuestaDomain<Object> eliminarRolById(int idRol) {
-        ObjetoRespuestaDomain<Object> respuesta = rolUseCase.eliminarRolById(idRol);
+    public ObjetoRespuestaDomain<Integer> eliminarRolById(int idRol) {
+        ObjetoRespuestaDomain<Integer> respuesta = rolUseCase.eliminarRolById(idRol);
 
         return respuesta.getDato() == null
                 ? new ObjetoRespuestaDomain<>(null, respuesta.getMessage())
