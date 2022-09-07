@@ -1,6 +1,5 @@
 package com.pragma.orbita.driver.users.domain.usecase;
 
-import com.pragma.orbita.driver.users.application.respuesta.ObjetoRespuesta;
 import com.pragma.orbita.driver.users.domain.model.UsuarioRol;
 import com.pragma.orbita.driver.users.domain.repository.IUsuarioRolRepository;
 import lombok.RequiredArgsConstructor;
@@ -11,7 +10,6 @@ import javax.validation.Validator;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
-import java.util.stream.Stream;
 
 @Service
 @RequiredArgsConstructor

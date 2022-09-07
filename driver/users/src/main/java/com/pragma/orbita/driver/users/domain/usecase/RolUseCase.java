@@ -1,8 +1,8 @@
 package com.pragma.orbita.driver.users.domain.usecase;
 
+import com.pragma.orbita.driver.users.application.respuesta.ObjetoRespuesta;
 import com.pragma.orbita.driver.users.domain.model.Rol;
 import com.pragma.orbita.driver.users.domain.repository.IRolRepository;
-import com.pragma.orbita.driver.users.application.respuesta.ObjetoRespuesta;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 

@@ -3,7 +3,6 @@ package com.pragma.orbita.driver.users.domain.repository;
 import com.pragma.orbita.driver.users.domain.model.UsuarioRol;
 
 import java.util.List;
-import java.util.stream.Stream;
 
 public interface IUsuarioRolRepository {
 

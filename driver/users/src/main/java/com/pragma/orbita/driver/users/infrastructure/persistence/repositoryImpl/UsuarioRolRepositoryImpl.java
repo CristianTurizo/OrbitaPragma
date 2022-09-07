@@ -4,15 +4,11 @@ import com.pragma.orbita.driver.users.domain.model.UsuarioRol;
 import com.pragma.orbita.driver.users.domain.repository.IUsuarioRolRepository;
 import com.pragma.orbita.driver.users.infrastructure.persistence.DAO.IUsuarioRolDao;
 import com.pragma.orbita.driver.users.infrastructure.persistence.entity.UsuarioRolEntity;
-import com.pragma.orbita.driver.users.infrastructure.persistence.mapper.IMapperUsuarioRepository;
 import com.pragma.orbita.driver.users.infrastructure.persistence.mapper.IMapperUsuarioRolRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
-import java.util.stream.Stream;
 
 @Repository
 @RequiredArgsConstructor

@@ -5,8 +5,6 @@ import com.pragma.orbita.driver.users.application.DTORespuesta.RolDtoRespuesta;
 import com.pragma.orbita.driver.users.domain.model.Rol;
 import org.mapstruct.Mapper;
 
-import java.util.List;
-
 @Mapper(componentModel = "spring")
 public interface IRolMapper {
 
