@@ -1,14 +1,14 @@
 package com.pragma.orbita.driver.users.domain.usecase;
 
-import com.pragma.orbita.driver.users.domain.model.Usuario;
 import com.pragma.orbita.driver.users.domain.model.UsuarioRol;
 import com.pragma.orbita.driver.users.domain.repository.IUsuarioRolRepository;
-import com.pragma.orbita.driver.users.domain.respuesta.ObjetoRespuestaDomain;
+import com.pragma.orbita.driver.users.application.respuesta.ObjetoRespuesta;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import javax.validation.ConstraintViolation;
 import javax.validation.Validator;
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Stream;
@@ -36,32 +36,29 @@ public class UsuarioRolUseCase {
         return usuarioRolRepository.guardarUsuarioRol(usuarioRol);
     }
 
-    public UsuarioRol obtenerPorUsuario(int idUsuario) {
+    public List<UsuarioRol> obtenerPorUsuario(int idUsuario) {
         if (idUsuario <= 0)
             return null;
 
-        Optional<UsuarioRol> usuario = usuarioRolRepository.obtenerPorUsuario(idUsuario);
-        return usuario.isEmpty()
-                ? null
-                : usuario.get();
+        return usuarioRolRepository.obtenerPorUsuario(idUsuario);
     }
 
-    public ObjetoRespuestaDomain<Integer> eliminarUsuarioById(int idUsuario) {
+    public ObjetoRespuesta<Integer> eliminarUsuarioById(int idUsuario) {
         if (idUsuario <= 0)
-            return new ObjetoRespuestaDomain<>(null, "Id no válido");
+            return new ObjetoRespuesta<>(null, "Id no válido");
 
         if (!existeUsuarioById(idUsuario))
-            return new ObjetoRespuestaDomain<>(idUsuario, "Esta categoría no se encuentra registrada en el sistema, nada que eliminar");
+            return new ObjetoRespuesta<>(idUsuario, "Esta categoría no se encuentra registrada en el sistema, nada que eliminar");
 
         usuarioRolRepository.eliminarUsuarioRol(idUsuario);
 
         return existeUsuarioById(idUsuario)
-                ? new ObjetoRespuestaDomain<>(idUsuario, "Ocurrió un error al eliminar la categoría")
-                : new ObjetoRespuestaDomain<>(idUsuario, "Categoría eliminada con éxito");
+                ? new ObjetoRespuesta<>(idUsuario, "Ocurrió un error al eliminar la categoría")
+                : new ObjetoRespuesta<>(idUsuario, "Categoría eliminada con éxito");
     }
 
-    public ObjetoRespuestaDomain<Stream<UsuarioRol>> obtenerTodasUsuarios() {
-        return new ObjetoRespuestaDomain<>(
+    public ObjetoRespuesta<Stream<UsuarioRol>> obtenerTodasUsuarios() {
+        return new ObjetoRespuesta<>(
                 usuarioRolRepository.obtenerTodos(),
                 "Listado");
     }

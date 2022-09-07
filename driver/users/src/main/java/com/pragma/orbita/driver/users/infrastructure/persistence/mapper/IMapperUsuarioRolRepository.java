@@ -5,12 +5,14 @@ import com.pragma.orbita.driver.users.infrastructure.persistence.entity.UsuarioR
 import org.mapstruct.Mapper;
 import org.mapstruct.factory.Mappers;
 
-@Mapper
+import java.util.List;
+
+@Mapper(componentModel = "spring")
 public interface IMapperUsuarioRolRepository {
 
-    IMapperUsuarioRolRepository INSTANCE = Mappers.getMapper(IMapperUsuarioRolRepository.class);
-
     UsuarioRolEntity usuarioRolToEntity(UsuarioRol usuarioRol);
+
+    List<UsuarioRol> entitiesToDomain(List<UsuarioRolEntity> entities);
 
     UsuarioRol entityToDomain(UsuarioRolEntity usuarioRolEntity);
 

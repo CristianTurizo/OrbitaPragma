@@ -2,7 +2,7 @@ package com.pragma.orbita.driver.users.domain.usecase;
 
 import com.pragma.orbita.driver.users.domain.model.Rol;
 import com.pragma.orbita.driver.users.domain.repository.IRolRepository;
-import com.pragma.orbita.driver.users.domain.respuesta.ObjetoRespuestaDomain;
+import com.pragma.orbita.driver.users.application.respuesta.ObjetoRespuesta;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -45,22 +45,22 @@ public class RolUseCase {
                 : rol.get();
     }
 
-    public ObjetoRespuestaDomain<Integer> eliminarRolById(int idRol) {
+    public ObjetoRespuesta<Integer> eliminarRolById(int idRol) {
         if (idRol <= 0)
-            return new ObjetoRespuestaDomain<>(null, "Id no válido");
+            return new ObjetoRespuesta<>(null, "Id no válido");
 
         if (!existeRolById(idRol))
-            return new ObjetoRespuestaDomain<>(idRol, "Esta categoría no se encuentra registrada en el sistema, nada que eliminar");
+            return new ObjetoRespuesta<>(idRol, "Esta categoría no se encuentra registrada en el sistema, nada que eliminar");
 
         rolRepository.eliminarRolById(idRol);
 
         return existeRolById(idRol)
-                ? new ObjetoRespuestaDomain<>(idRol, "Ocurrió un error al eliminar la categoría")
-                : new ObjetoRespuestaDomain<>(idRol, "Categoría eliminada con éxito");
+                ? new ObjetoRespuesta<>(idRol, "Ocurrió un error al eliminar la categoría")
+                : new ObjetoRespuesta<>(idRol, "Categoría eliminada con éxito");
     }
 
-    public ObjetoRespuestaDomain<Stream<Rol>> obtenerTodosRol() {
-        return new ObjetoRespuestaDomain<>(
+    public ObjetoRespuesta<Stream<Rol>> obtenerTodosRol() {
+        return new ObjetoRespuesta<>(
                 rolRepository.obtenerTodosRol(),
                 "Listado");
     }

@@ -13,5 +13,5 @@ import java.util.List;
 @Builder
 public class UsuarioRolDtoRespuesta {
     private UsuarioDTORespuesta usuario;
-    private RolDtoRespuesta rol;
+    private List<RolDtoRespuesta> roles;
 }

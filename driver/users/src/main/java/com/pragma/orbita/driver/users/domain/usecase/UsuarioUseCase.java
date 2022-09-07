@@ -2,7 +2,7 @@ package com.pragma.orbita.driver.users.domain.usecase;
 
 import com.pragma.orbita.driver.users.domain.model.Usuario;
 import com.pragma.orbita.driver.users.domain.repository.IUsuarioRepository;
-import com.pragma.orbita.driver.users.domain.respuesta.ObjetoRespuestaDomain;
+import com.pragma.orbita.driver.users.application.respuesta.ObjetoRespuesta;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -51,23 +51,23 @@ public class UsuarioUseCase {
         return usuarioRepository.existeUsuarioById(idUsuario);
     }
 
-    public ObjetoRespuestaDomain<Integer> eliminarUsuarioById(int idUsuario) {
+    public ObjetoRespuesta<Integer> eliminarUsuarioById(int idUsuario) {
         if (idUsuario <= 0)
-            return new ObjetoRespuestaDomain<>(null, "Id no válido");
+            return new ObjetoRespuesta<>(null, "Id no válido");
 
         if (!existeUsuarioById(idUsuario))
-            return new ObjetoRespuestaDomain<>(idUsuario, "Esta categoría no se encuentra registrada en el sistema, nada que eliminar");
+            return new ObjetoRespuesta<>(idUsuario, "Esta categoría no se encuentra registrada en el sistema, nada que eliminar");
 
         usuarioRepository.eliminarUsuarioById(idUsuario);
 
         return existeUsuarioById(idUsuario)
-                ? new ObjetoRespuestaDomain<>(idUsuario, "Ocurrió un error al eliminar la categoría")
-                : new ObjetoRespuestaDomain<>(idUsuario, "Categoría eliminada con éxito");
+                ? new ObjetoRespuesta<>(idUsuario, "Ocurrió un error al eliminar la categoría")
+                : new ObjetoRespuesta<>(idUsuario, "Categoría eliminada con éxito");
 
     }
 
-    public ObjetoRespuestaDomain<Stream<Usuario>> obtenerTodasUsuarios() {
-        return new ObjetoRespuestaDomain<>(
+    public ObjetoRespuesta<Stream<Usuario>> obtenerTodasUsuarios() {
+        return new ObjetoRespuesta<>(
                 usuarioRepository.obtenerTodosUsuarios(),
                 "Listado");
     }

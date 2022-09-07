@@ -3,7 +3,7 @@ package com.pragma.orbita.driver.users.infrastructure.endpoint;
 import com.pragma.orbita.driver.users.application.DTOConsulta.UsuarioDtoConsulta;
 import com.pragma.orbita.driver.users.application.DTORespuesta.UsuarioRolDtoRespuesta;
 import com.pragma.orbita.driver.users.application.service.UsuarioRolService;
-import com.pragma.orbita.driver.users.domain.respuesta.ObjetoRespuestaDomain;
+import com.pragma.orbita.driver.users.application.respuesta.ObjetoRespuesta;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -28,8 +28,8 @@ public class EndpointUsuarioRol {
     private final UsuarioRolService usuarioRolService;
 
     @PostMapping
-    public ResponseEntity<ObjetoRespuestaDomain<UsuarioRolDtoRespuesta>> guardarUsuario(@NotNull @RequestBody UsuarioDtoConsulta usuarioDto) {
-        ObjetoRespuestaDomain<UsuarioRolDtoRespuesta> usuario = usuarioRolService.guardarUsuario(usuarioDto);
+    public ResponseEntity<ObjetoRespuesta<UsuarioRolDtoRespuesta>> guardarUsuario(@NotNull @RequestBody UsuarioDtoConsulta usuarioDto) {
+        ObjetoRespuesta<UsuarioRolDtoRespuesta> usuario = usuarioRolService.guardarUsuario(usuarioDto);
 
         return usuario.getDato() == null
                 ? new ResponseEntity<>(usuario, HttpStatus.CONFLICT)
@@ -37,8 +37,8 @@ public class EndpointUsuarioRol {
     }
 
     @GetMapping("/{idUsuario}")
-    public ResponseEntity<ObjetoRespuestaDomain<UsuarioRolDtoRespuesta>> obtenerUsuarioPorId(@NotNull @PathVariable int idUsuario) {
-        ObjetoRespuestaDomain<UsuarioRolDtoRespuesta> usuario = usuarioRolService.buscarUsuarioPorId(idUsuario);
+    public ResponseEntity<ObjetoRespuesta<UsuarioRolDtoRespuesta>> obtenerUsuarioPorId(@NotNull @PathVariable int idUsuario) {
+        ObjetoRespuesta<UsuarioRolDtoRespuesta> usuario = usuarioRolService.buscarUsuarioPorId(idUsuario);
 
         return usuario.getDato() == null
                 ? new ResponseEntity<>(usuario, HttpStatus.NOT_FOUND)

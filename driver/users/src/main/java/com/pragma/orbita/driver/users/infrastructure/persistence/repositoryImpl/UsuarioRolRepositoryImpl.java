@@ -18,23 +18,21 @@ import java.util.stream.Stream;
 @RequiredArgsConstructor
 public class UsuarioRolRepositoryImpl implements IUsuarioRolRepository {
 
+    private final IMapperUsuarioRolRepository mapperUsuarioRolRepository;
     private final IUsuarioRolDao usuarioRolDao;
 
     @Override
     public UsuarioRol guardarUsuarioRol(UsuarioRol usuarioRol) {
-        UsuarioRolEntity usuarioRolEntity = IMapperUsuarioRolRepository.INSTANCE.usuarioRolToEntity(usuarioRol);
-        return IMapperUsuarioRolRepository.INSTANCE
+        UsuarioRolEntity usuarioRolEntity = mapperUsuarioRolRepository.usuarioRolToEntity(usuarioRol);
+        return mapperUsuarioRolRepository
                 .entityToDomain(
                         usuarioRolDao.save(usuarioRolEntity));
     }
 
     @Override
-    public Optional<UsuarioRol> obtenerPorUsuario(int id) {
-        Optional<UsuarioRolEntity> respuesta = usuarioRolDao.findByIdUsuario(id);
-        return respuesta.isEmpty()
-                ? Optional.empty()
-                : Optional.of(IMapperUsuarioRolRepository.INSTANCE
-                        .entityToDomain(respuesta.get()));
+    public List<UsuarioRol> obtenerPorUsuario(int id) {
+        return mapperUsuarioRolRepository.entitiesToDomain(
+                usuarioRolDao.findByIdUsuario(id));
     }
 
     @Override
@@ -47,7 +45,7 @@ public class UsuarioRolRepositoryImpl implements IUsuarioRolRepository {
     public Stream<UsuarioRol> obtenerTodos() {
         List<UsuarioRol> usuariosRoles = new ArrayList<>();
         usuarioRolDao.findAll().forEach(usuarioRolEntity ->
-                usuariosRoles.add(IMapperUsuarioRolRepository.INSTANCE
+                usuariosRoles.add(mapperUsuarioRolRepository
                         .entityToDomain(usuarioRolEntity)
                 )
         );

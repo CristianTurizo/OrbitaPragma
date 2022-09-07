@@ -1,18 +1,22 @@
 package com.pragma.orbita.driver.users.application.service;
 
 import com.pragma.orbita.driver.users.application.DTOConsulta.UsuarioDtoConsulta;
+import com.pragma.orbita.driver.users.application.DTORespuesta.RolDtoRespuesta;
 import com.pragma.orbita.driver.users.application.DTORespuesta.UsuarioRolDtoRespuesta;
 import com.pragma.orbita.driver.users.application.mapper.mapInterface.IRolMapper;
 import com.pragma.orbita.driver.users.application.mapper.mapInterface.IUsuarioMapper;
 import com.pragma.orbita.driver.users.domain.model.Rol;
 import com.pragma.orbita.driver.users.domain.model.Usuario;
 import com.pragma.orbita.driver.users.domain.model.UsuarioRol;
-import com.pragma.orbita.driver.users.domain.respuesta.ObjetoRespuestaDomain;
+import com.pragma.orbita.driver.users.application.respuesta.ObjetoRespuesta;
 import com.pragma.orbita.driver.users.domain.usecase.RolUseCase;
 import com.pragma.orbita.driver.users.domain.usecase.UsuarioRolUseCase;
 import com.pragma.orbita.driver.users.domain.usecase.UsuarioUseCase;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -24,47 +28,62 @@ public class UsuarioRolService {
     private final UsuarioUseCase usuarioUseCase;
     private final RolUseCase rolUseCase;
 
-    public ObjetoRespuestaDomain<UsuarioRolDtoRespuesta> guardarUsuario(UsuarioDtoConsulta usuarioDtoConsulta) {
-        int rol = usuarioDtoConsulta.getIdRol();
-        if (!rolUseCase.existeRolById(rol))
-            return new ObjetoRespuestaDomain<>(null, "No existe el rol que quiere asociar");
+    public ObjetoRespuesta<UsuarioRolDtoRespuesta> guardarUsuario(UsuarioDtoConsulta usuarioDtoConsulta) {
+        List<Integer> roles = usuarioDtoConsulta.getRoles();
+        for (Integer rol : roles) {
+            if (!rolUseCase.existeRolById(rol))
+                return new ObjetoRespuesta<>(null, "No existe el rol que quiere asociar");
+        }
 
         Usuario respuestaUsuario = usuarioUseCase.guardarUsuario(
                 usuarioMapper.consultaDtoToUsuario(usuarioDtoConsulta));
         if (respuestaUsuario == null)
-            return new ObjetoRespuestaDomain<>(null, "No se pudo guardar el usuario - Entidad");
+            return new ObjetoRespuesta<>(null, "No se pudo guardar el usuario - Entidad");
 
-        UsuarioRol usuarioRol = UsuarioRol.builder()
-                .idUsuario(respuestaUsuario.getIdUsuario())
-                .idRol(rol)
-                .build();
+        for (Integer rol : roles) {
+            UsuarioRol usuarioRol = usuarioRolUseCase.guardarUsuarioRol(
+                    UsuarioRol.builder()
+                            .idUsuario(respuestaUsuario.getIdUsuario())
+                            .idRol(rol)
+                            .build());
 
-        UsuarioRol respuestaUsuarioRol = usuarioRolUseCase.guardarUsuarioRol(usuarioRol);
-        if (respuestaUsuarioRol == null)
-            return new ObjetoRespuestaDomain<>(null, "No se pudo guardar el usuario - Relacion");
+            if (usuarioRol == null)
+                return new ObjetoRespuesta<>(null, "No se pudo guardar el usuario - Entidad");
+        }
 
+        List<RolDtoRespuesta> rolesDtoRespuesta = new ArrayList<>();
+        for (Integer rol: roles) {
+            rolesDtoRespuesta.add(
+                    rolMapper.rolToDtoRespuesta(
+                            rolUseCase.getRolById(rol)));
+        }
         UsuarioRolDtoRespuesta usuarioRolDtoRespuesta = UsuarioRolDtoRespuesta.builder()
                 .usuario(usuarioMapper.usuarioToDtoRespuesta(respuestaUsuario))
-                .rol(rolMapper.rolToDtoRespuesta(rolUseCase.getRolById(rol)))
+                .roles(rolesDtoRespuesta)
                 .build();
 
-        return new ObjetoRespuestaDomain<>(usuarioRolDtoRespuesta, "Creado con exito");
+        return new ObjetoRespuesta<>(usuarioRolDtoRespuesta, "Creado con exito");
     }
 
-    public ObjetoRespuestaDomain<UsuarioRolDtoRespuesta> buscarUsuarioPorId(int idUsuario) {
+    public ObjetoRespuesta<UsuarioRolDtoRespuesta> buscarUsuarioPorId(int idUsuario) {
         Usuario respuestaUsuario = usuarioUseCase.getUsuarioById(idUsuario);
         if (respuestaUsuario == null)
-            return new ObjetoRespuestaDomain<>(null, "No se encontro usuario");
+            return new ObjetoRespuesta<>(null, "No se encontro usuario");
 
-        UsuarioRol usuarioRol = usuarioRolUseCase.obtenerPorUsuario(respuestaUsuario.getIdUsuario());
-        Rol respuestaRol = rolUseCase.getRolById(usuarioRol.getIdRol());
+        List<UsuarioRol> rolesDeUsuario = usuarioRolUseCase.obtenerPorUsuario(respuestaUsuario.getIdUsuario());
 
+        List<RolDtoRespuesta> rolesDtoRespuesta = new ArrayList<>();
+        for (UsuarioRol rol: rolesDeUsuario) {
+            rolesDtoRespuesta.add(
+                    rolMapper.rolToDtoRespuesta(
+                            rolUseCase.getRolById(rol.getIdRol())));
+        }
         UsuarioRolDtoRespuesta usuarioRolDtoRespuesta = UsuarioRolDtoRespuesta.builder()
                 .usuario(usuarioMapper.usuarioToDtoRespuesta(respuestaUsuario))
-                .rol(rolMapper.rolToDtoRespuesta(respuestaRol))
+                .roles(rolesDtoRespuesta)
                 .build();
 
-        return new ObjetoRespuestaDomain<>(usuarioRolDtoRespuesta, "Usuario Encontrado");
+        return new ObjetoRespuesta<>(usuarioRolDtoRespuesta, "Usuario Encontrado");
     }
 
 }
