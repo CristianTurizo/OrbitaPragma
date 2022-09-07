@@ -10,4 +10,6 @@ import java.util.Optional;
 public interface IUsuarioRolDao extends CrudRepository<UsuarioRolEntity, Integer> {
 
     List<UsuarioRolEntity> findByIdUsuario(int id);
+
+    UsuarioRolEntity findByIdUsuarioAndIdRol(int idUsuario, int idRol);
 }

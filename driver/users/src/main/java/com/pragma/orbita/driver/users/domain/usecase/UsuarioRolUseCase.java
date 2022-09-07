@@ -1,15 +1,15 @@
 package com.pragma.orbita.driver.users.domain.usecase;
 
+import com.pragma.orbita.driver.users.application.respuesta.ObjetoRespuesta;
 import com.pragma.orbita.driver.users.domain.model.UsuarioRol;
 import com.pragma.orbita.driver.users.domain.repository.IUsuarioRolRepository;
-import com.pragma.orbita.driver.users.application.respuesta.ObjetoRespuesta;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import javax.validation.ConstraintViolation;
 import javax.validation.Validator;
+import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Stream;
 
@@ -21,7 +21,7 @@ public class UsuarioRolUseCase {
     private final Validator validator;
 
 
-    public UsuarioRol guardarUsuarioRol(UsuarioRol usuarioRol) {
+    public UsuarioRol guardarRelacion(UsuarioRol usuarioRol) {
         Set<ConstraintViolation<UsuarioRol>> validation = validator.validate(usuarioRol);
         if (!validation.isEmpty()) {
             StringBuilder errores = new StringBuilder("Datos no válidos.");
@@ -38,32 +38,23 @@ public class UsuarioRolUseCase {
 
     public List<UsuarioRol> obtenerPorUsuario(int idUsuario) {
         if (idUsuario <= 0)
-            return null;
+            return Collections.emptyList();
 
         return usuarioRolRepository.obtenerPorUsuario(idUsuario);
     }
 
-    public ObjetoRespuesta<Integer> eliminarUsuarioById(int idUsuario) {
-        if (idUsuario <= 0)
-            return new ObjetoRespuesta<>(null, "Id no válido");
+    public UsuarioRol obtenerRelacionPorIds(int idUsuario, int idRol) {
+        if (idUsuario <= 0 || idRol <= 0)
+            return null;
 
-        if (!existeUsuarioById(idUsuario))
-            return new ObjetoRespuesta<>(idUsuario, "Esta categoría no se encuentra registrada en el sistema, nada que eliminar");
-
-        usuarioRolRepository.eliminarUsuarioRol(idUsuario);
-
-        return existeUsuarioById(idUsuario)
-                ? new ObjetoRespuesta<>(idUsuario, "Ocurrió un error al eliminar la categoría")
-                : new ObjetoRespuesta<>(idUsuario, "Categoría eliminada con éxito");
+        return usuarioRolRepository.obtenerPorUsuarioYRol(idUsuario, idRol);
     }
 
-    public ObjetoRespuesta<Stream<UsuarioRol>> obtenerTodasUsuarios() {
-        return new ObjetoRespuesta<>(
-                usuarioRolRepository.obtenerTodos(),
-                "Listado");
+    public void eliminarPorId(int id) {
+        usuarioRolRepository.eliminarRelacion(id);
     }
 
-    public boolean existeUsuarioById(int idUsuario) {
+    public boolean exiteRelacion(int idUsuario) {
         if (idUsuario <= 0) {
             return false;
         }

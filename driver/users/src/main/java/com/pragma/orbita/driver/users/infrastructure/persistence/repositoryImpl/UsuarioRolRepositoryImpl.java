@@ -36,20 +36,14 @@ public class UsuarioRolRepositoryImpl implements IUsuarioRolRepository {
     }
 
     @Override
-    public void eliminarUsuarioRol(int id) {
-        usuarioRolDao.deleteById(id);
+    public UsuarioRol obtenerPorUsuarioYRol(int idUsuario, int idRol) {
+        return mapperUsuarioRolRepository.entityToDomain(
+                usuarioRolDao.findByIdUsuarioAndIdRol(idUsuario, idRol));
     }
 
-
     @Override
-    public Stream<UsuarioRol> obtenerTodos() {
-        List<UsuarioRol> usuariosRoles = new ArrayList<>();
-        usuarioRolDao.findAll().forEach(usuarioRolEntity ->
-                usuariosRoles.add(mapperUsuarioRolRepository
-                        .entityToDomain(usuarioRolEntity)
-                )
-        );
-        return usuariosRoles.stream();
+    public void eliminarRelacion(int id) {
+        usuarioRolDao.deleteById(id);
     }
 
     @Override

@@ -6,6 +6,9 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.ForeignKey;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
@@ -18,8 +21,9 @@ import javax.validation.constraints.NotNull;
 public class UsuarioRolEntity {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "id_usuario_rol", nullable = false)
-    private int idRolUsuario;
+    private int idUsuarioRol;
 
     @NotNull
     @Column(name = "id_usuario", nullable = false)

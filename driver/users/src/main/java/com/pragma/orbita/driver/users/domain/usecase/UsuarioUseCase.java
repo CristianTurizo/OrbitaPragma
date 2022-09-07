@@ -51,19 +51,8 @@ public class UsuarioUseCase {
         return usuarioRepository.existeUsuarioById(idUsuario);
     }
 
-    public ObjetoRespuesta<Integer> eliminarUsuarioById(int idUsuario) {
-        if (idUsuario <= 0)
-            return new ObjetoRespuesta<>(null, "Id no válido");
-
-        if (!existeUsuarioById(idUsuario))
-            return new ObjetoRespuesta<>(idUsuario, "Esta categoría no se encuentra registrada en el sistema, nada que eliminar");
-
+    public void eliminarUsuarioById(int idUsuario) {
         usuarioRepository.eliminarUsuarioById(idUsuario);
-
-        return existeUsuarioById(idUsuario)
-                ? new ObjetoRespuesta<>(idUsuario, "Ocurrió un error al eliminar la categoría")
-                : new ObjetoRespuesta<>(idUsuario, "Categoría eliminada con éxito");
-
     }
 
     public ObjetoRespuesta<Stream<Usuario>> obtenerTodasUsuarios() {
