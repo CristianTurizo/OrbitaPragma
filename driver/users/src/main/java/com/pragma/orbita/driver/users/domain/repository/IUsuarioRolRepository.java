@@ -6,7 +6,7 @@ import java.util.List;
 
 public interface IUsuarioRolRepository {
 
-    UsuarioRol guardarUsuarioRol(UsuarioRol usuarioRol);
+    UsuarioRol guardarRelacion(UsuarioRol usuarioRol);
 
     List<UsuarioRol> obtenerPorUsuario(int id);
 
@@ -14,5 +14,5 @@ public interface IUsuarioRolRepository {
 
     void eliminarRelacion(int id);
 
-    boolean existeUsuarioRol(int id);
+    boolean existeRelacion(int id);
 }

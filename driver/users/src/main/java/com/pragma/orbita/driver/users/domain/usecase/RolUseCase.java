@@ -1,6 +1,5 @@
 package com.pragma.orbita.driver.users.domain.usecase;
 
-import com.pragma.orbita.driver.users.application.respuesta.ObjetoRespuesta;
 import com.pragma.orbita.driver.users.domain.model.Rol;
 import com.pragma.orbita.driver.users.domain.repository.IRolRepository;
 import lombok.RequiredArgsConstructor;
@@ -45,24 +44,21 @@ public class RolUseCase {
                 : rol.get();
     }
 
-    public ObjetoRespuesta<Integer> eliminarRolById(int idRol) {
+    public Integer eliminarRolById(int idRol) {
         if (idRol <= 0)
-            return new ObjetoRespuesta<>(null, "Id no válido");
-
+            return null;
         if (!existeRolById(idRol))
-            return new ObjetoRespuesta<>(idRol, "Esta categoría no se encuentra registrada en el sistema, nada que eliminar");
+            return null;
 
         rolRepository.eliminarRolById(idRol);
 
         return existeRolById(idRol)
-                ? new ObjetoRespuesta<>(idRol, "Ocurrió un error al eliminar la categoría")
-                : new ObjetoRespuesta<>(idRol, "Categoría eliminada con éxito");
+                ? null
+                : idRol;
     }
 
-    public ObjetoRespuesta<Stream<Rol>> obtenerTodosRol() {
-        return new ObjetoRespuesta<>(
-                rolRepository.obtenerTodosRol(),
-                "Listado");
+    public Stream<Rol> obtenerTodosRol() {
+        return rolRepository.obtenerTodosRol();
     }
 
     public boolean existeRolById(int idRol) {

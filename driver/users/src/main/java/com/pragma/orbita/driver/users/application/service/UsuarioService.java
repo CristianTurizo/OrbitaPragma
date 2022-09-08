@@ -1,10 +1,10 @@
 package com.pragma.orbita.driver.users.application.service;
 
 import com.pragma.orbita.driver.users.application.DTOConsulta.UsuarioDtoConsulta;
-import com.pragma.orbita.driver.users.application.DTORespuesta.UsuarioDTORespuesta;
+import com.pragma.orbita.driver.users.application.DTORespuesta.UsuarioDtoRespuesta;
 import com.pragma.orbita.driver.users.application.mapper.mapInterface.IUsuarioMapper;
+import com.pragma.orbita.driver.users.application.respuesta.ObjetoRespuesta;
 import com.pragma.orbita.driver.users.domain.model.Usuario;
-import com.pragma.orbita.driver.users.domain.respuesta.ObjetoRespuestaDomain;
 import com.pragma.orbita.driver.users.domain.usecase.UsuarioUseCase;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -17,55 +17,56 @@ import java.util.stream.Stream;
 @RequiredArgsConstructor
 public class UsuarioService {
 
+    private final IUsuarioMapper usuarioMapper;
     private final UsuarioUseCase usuarioUseCase;
 
-    public ObjetoRespuestaDomain<UsuarioDTORespuesta> guardarUsuario(UsuarioDtoConsulta usuarioDTOConsulta) {
-        Usuario usuario = IUsuarioMapper.INSTANCE.consultaDtoToUsuario(usuarioDTOConsulta);
-        ObjetoRespuestaDomain<Usuario> respuesta = usuarioUseCase.guardarUsuario(usuario);
+    public ObjetoRespuesta<UsuarioDtoRespuesta> guardarUsuario(UsuarioDtoConsulta usuarioDTOConsulta) {
+        Usuario usuario = usuarioMapper.consultaDtoToUsuario(usuarioDTOConsulta);
+        Usuario respuesta = usuarioUseCase.guardarUsuario(usuario);
 
-        return respuesta.getDato() == null
-                ? new ObjetoRespuestaDomain<>(null, respuesta.getMessage())
-                : new ObjetoRespuestaDomain<>(
-                        IUsuarioMapper.INSTANCE.usuarioToDtoRespuesta(respuesta.getDato()),
-                        respuesta.getMessage());
+        return respuesta == null
+                ? new ObjetoRespuesta<>(null, "No se pudo guardar el usuario")
+                : new ObjetoRespuesta<>(
+                usuarioMapper.usuarioToDtoRespuesta(respuesta),
+                "Usuario guardado con exito");
     }
 
-    public ObjetoRespuestaDomain<UsuarioDTORespuesta> buscarUsuarioPorId(int idUsuario) {
-        ObjetoRespuestaDomain<Usuario> respuesta = usuarioUseCase.getUsuarioById(idUsuario);
+    public ObjetoRespuesta<UsuarioDtoRespuesta> buscarUsuarioPorId(int idUsuario) {
+        Usuario respuesta = usuarioUseCase.getUsuarioById(idUsuario);
 
-        return respuesta.getDato() == null
-                ? new ObjetoRespuestaDomain<>(null, respuesta.getMessage())
-                : new ObjetoRespuestaDomain<>(
-                        IUsuarioMapper.INSTANCE.usuarioToDtoRespuesta(respuesta.getDato()),
-                        respuesta.getMessage());
+        return respuesta == null
+                ? new ObjetoRespuesta<>(null, "No se encontró el usuario")
+                : new ObjetoRespuesta<>(
+                usuarioMapper.usuarioToDtoRespuesta(respuesta),
+                "Usuario encontrado");
     }
 
-    public ObjetoRespuestaDomain<UsuarioDTORespuesta> actualizarUsuario(UsuarioDtoConsulta usuarioDTOConsulta) {
-        Usuario usuario = IUsuarioMapper.INSTANCE.consultaDtoToUsuario(usuarioDTOConsulta);
-        ObjetoRespuestaDomain<Usuario> respuesta = usuarioUseCase.guardarUsuario(usuario);
+    public ObjetoRespuesta<UsuarioDtoRespuesta> actualizarUsuario(UsuarioDtoConsulta usuarioDTOConsulta) {
+        Usuario usuario = usuarioMapper.consultaDtoToUsuario(usuarioDTOConsulta);
+        Usuario respuesta = usuarioUseCase.guardarUsuario(usuario);
 
-        return respuesta.getDato() == null
-                ? new ObjetoRespuestaDomain<>(null, "Ocurrió un error al actualizar los datos de la categoría")
-                : new ObjetoRespuestaDomain<>(
-                        IUsuarioMapper.INSTANCE.usuarioToDtoRespuesta(respuesta.getDato()),
-                        "Categoría actualizada con éxito");
+        return respuesta == null
+                ? new ObjetoRespuesta<>(null, "Ocurrió un error al actualizar los datos de la categoría")
+                : new ObjetoRespuesta<>(
+                usuarioMapper.usuarioToDtoRespuesta(respuesta),
+                "Categoría actualizada con éxito");
     }
 
-    public ObjetoRespuestaDomain<Integer> eliminarUsuarioById(int idUsuario) {
-        ObjetoRespuestaDomain<Integer> respuesta = usuarioUseCase.eliminarUsuarioById(idUsuario);
+    public ObjetoRespuesta<Object> eliminarUsuarioById(int idUsuario) {
+        Integer respuesta = usuarioUseCase.eliminarUsuarioById(idUsuario);
 
-        return respuesta.getDato() == null
-                ? new ObjetoRespuestaDomain<>(null, respuesta.getMessage())
-                : new ObjetoRespuestaDomain<>(idUsuario, respuesta.getMessage());
+        return respuesta == null
+                ? new ObjetoRespuesta<>(null, "No se pudo eliminar el usuario")
+                : new ObjetoRespuesta<>(respuesta, "Usuario eliminado con exito");
     }
 
-    public ObjetoRespuestaDomain<List<UsuarioDTORespuesta>> obtenerTodasUsuarios() {
-        Stream<Usuario> usuarioStream = usuarioUseCase.obtenerTodasUsuarios().getDato();
+    public ObjetoRespuesta<List<UsuarioDtoRespuesta>> obtenerTodasUsuarios() {
+        Stream<Usuario> usuarioStream = usuarioUseCase.obtenerTodasUsuarios();
 
-        List<UsuarioDTORespuesta> usuarios = usuarioStream
-                .map(IUsuarioMapper.INSTANCE::usuarioToDtoRespuesta)
+        List<UsuarioDtoRespuesta> usuarios = usuarioStream
+                .map(usuarioMapper::usuarioToDtoRespuesta)
                 .collect(Collectors.toList());
 
-        return new ObjetoRespuestaDomain<>(usuarios, "Listado");
+        return new ObjetoRespuesta<>(usuarios, "Listado");
     }
 }

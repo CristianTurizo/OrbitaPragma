@@ -1,12 +1,12 @@
 package com.pragma.orbita.driver.users.application.service;
 
-import com.pragma.orbita.driver.users.application.DTOConsulta.RolDTOConsulta;
-import com.pragma.orbita.driver.users.application.DTORespuesta.RolDTORespuesta;
+import com.pragma.orbita.driver.users.application.DTOConsulta.RolDtoConsulta;
+import com.pragma.orbita.driver.users.application.DTORespuesta.RolDtoRespuesta;
 import com.pragma.orbita.driver.users.application.mapper.mapInterface.IRolMapper;
+import com.pragma.orbita.driver.users.application.respuesta.ObjetoRespuesta;
 import com.pragma.orbita.driver.users.domain.model.Rol;
-import com.pragma.orbita.driver.users.domain.respuesta.ObjetoRespuestaDomain;
 import com.pragma.orbita.driver.users.domain.usecase.RolUseCase;
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -14,58 +14,59 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 @Service
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class RolService {
 
-    private RolUseCase rolUseCase;
+    private final IRolMapper rolMapper;
+    private final RolUseCase rolUseCase;
 
-    public ObjetoRespuestaDomain<RolDTORespuesta> guardarRol(RolDTOConsulta rolDTOConsulta) {
-        Rol rol = IRolMapper.INSTANCE.consultaDtoToRol(rolDTOConsulta);
-        ObjetoRespuestaDomain<Rol> respuesta = rolUseCase.guardarRol(rol);
+    public ObjetoRespuesta<RolDtoRespuesta> guardarRol(RolDtoConsulta rolDTOConsulta) {
+        Rol respuesta = rolUseCase.guardarRol(
+                rolMapper.consultaDtoToRol(rolDTOConsulta));
 
-        return respuesta.getDato() == null
-                ? new ObjetoRespuestaDomain<>(null, respuesta.getMessage())
-                : new ObjetoRespuestaDomain<>(
-                        IRolMapper.INSTANCE.rolToDtoRespuesta(respuesta.getDato()),
-                        respuesta.getMessage());
+        return respuesta == null
+                ? new ObjetoRespuesta<>(null, "No se pudo guardar el Rol")
+                : new ObjetoRespuesta<>(
+                rolMapper.rolToDtoRespuesta(respuesta),
+                "Se guardó el rol con exito");
     }
 
-    public ObjetoRespuestaDomain<RolDTORespuesta> buscarRolPorId(int idRol) {
-        ObjetoRespuestaDomain<Rol> respuesta = rolUseCase.getRolById(idRol);
+    public ObjetoRespuesta<RolDtoRespuesta> buscarRolPorId(int idRol) {
+        Rol respuesta = rolUseCase.getRolById(idRol);
 
-        return respuesta.getDato() == null
-                ? new ObjetoRespuestaDomain<>(null, respuesta.getMessage())
-                : new ObjetoRespuestaDomain<>(
-                        IRolMapper.INSTANCE.rolToDtoRespuesta(respuesta.getDato()),
-                        respuesta.getMessage());
+        return respuesta == null
+                ? new ObjetoRespuesta<>(null, "No se encontró el Rol")
+                : new ObjetoRespuesta<>(
+                rolMapper.rolToDtoRespuesta(respuesta),
+                "Rol encontrado");
     }
 
-    public ObjetoRespuestaDomain<RolDTORespuesta> actualizarRol(RolDTOConsulta rolDTOConsulta) {
-        Rol rol = IRolMapper.INSTANCE.consultaDtoToRol(rolDTOConsulta);
-        ObjetoRespuestaDomain<Rol> respuesta = rolUseCase.guardarRol(rol);
+    public ObjetoRespuesta<RolDtoRespuesta> actualizarRol(RolDtoConsulta rolDTOConsulta) {
+        Rol rol = rolMapper.consultaDtoToRol(rolDTOConsulta);
+        Rol respuesta = rolUseCase.guardarRol(rol);
 
-        return respuesta.getDato() == null
-                ? new ObjetoRespuestaDomain<>(null, "Ocurrió un error al actualizar los datos del rol")
-                : new ObjetoRespuestaDomain<>(
-                        IRolMapper.INSTANCE.rolToDtoRespuesta(respuesta.getDato()),
-                        "Rol actualizado con éxito");
+        return respuesta == null
+                ? new ObjetoRespuesta<>(null, "Ocurrió un error al actualizar los datos del rol")
+                : new ObjetoRespuesta<>(
+                rolMapper.rolToDtoRespuesta(respuesta),
+                "Rol actualizado con éxito");
     }
 
-    public ObjetoRespuestaDomain<Integer> eliminarRolById(int idRol) {
-        ObjetoRespuestaDomain<Integer> respuesta = rolUseCase.eliminarRolById(idRol);
+    public ObjetoRespuesta<Object> eliminarRolById(int idRol) {
+        Integer respuesta = rolUseCase.eliminarRolById(idRol);
 
-        return respuesta.getDato() == null
-                ? new ObjetoRespuestaDomain<>(null, respuesta.getMessage())
-                : new ObjetoRespuestaDomain<>(idRol, respuesta.getMessage());
+        return respuesta == null
+                ? new ObjetoRespuesta<>(null, "No se pudo eliminar el Rol")
+                : new ObjetoRespuesta<>(respuesta, "Rol eliminado con exito");
     }
 
-    public ObjetoRespuestaDomain<List<RolDTORespuesta>> obtenerTodosRol() {
-        Stream<Rol> rolStream = rolUseCase.obtenerTodosRol().getDato();
+    public ObjetoRespuesta<List<RolDtoRespuesta>> obtenerTodosRol() {
+        Stream<Rol> rolStream = rolUseCase.obtenerTodosRol();
 
-        List<RolDTORespuesta> rols = rolStream
-                .map(IRolMapper.INSTANCE::rolToDtoRespuesta)
+        List<RolDtoRespuesta> rols = rolStream
+                .map(rolMapper::rolToDtoRespuesta)
                 .collect(Collectors.toList());
 
-        return new ObjetoRespuestaDomain<>(rols, "Listado");
+        return new ObjetoRespuesta<>(rols, "Listado");
     }
 }

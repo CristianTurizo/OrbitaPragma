@@ -1,6 +1,6 @@
 package com.pragma.orbita.driver.users.application.mapper.mapInterface;
 
-import com.pragma.orbita.driver.users.application.DTOConsulta.RolDTOConsulta;
+import com.pragma.orbita.driver.users.application.DTOConsulta.RolDtoConsulta;
 import com.pragma.orbita.driver.users.application.DTORespuesta.RolDtoRespuesta;
 import com.pragma.orbita.driver.users.domain.model.Rol;
 import org.mapstruct.Mapper;
@@ -12,7 +12,7 @@ public interface IRolMapper {
 
     Rol respuestaDtoToRol (RolDtoRespuesta rolDTORespuesta);
 
-    RolDTOConsulta rolToDtoConsulta (Rol rol);
+    RolDtoConsulta rolToDtoConsulta (Rol rol);
 
-    Rol consultaDtoToRol (RolDTOConsulta rolDTOConsulta);
+    Rol consultaDtoToRol (RolDtoConsulta rolDTOConsulta);
 }

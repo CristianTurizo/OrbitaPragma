@@ -2,7 +2,6 @@ package com.pragma.orbita.driver.users.domain.usecase;
 
 import com.pragma.orbita.driver.users.domain.model.Usuario;
 import com.pragma.orbita.driver.users.domain.repository.IUsuarioRepository;
-import com.pragma.orbita.driver.users.application.respuesta.ObjetoRespuesta;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -18,6 +17,7 @@ public class UsuarioUseCase {
 
     private final IUsuarioRepository usuarioRepository;
     private final Validator validator;
+
 
     public Usuario guardarUsuario(Usuario usuario) {
         Set<ConstraintViolation<Usuario>> validation = validator.validate(usuario);
@@ -44,21 +44,28 @@ public class UsuarioUseCase {
                 : usuario.get();
     }
 
+    public Integer eliminarUsuarioById(int idUsuario) {
+        if (idUsuario <= 0)
+            return null;
+        if (!existeUsuarioById(idUsuario))
+            return null;
+
+        usuarioRepository.eliminarUsuarioById(idUsuario);
+
+        return existeUsuarioById(idUsuario)
+                ? null
+                : idUsuario;
+    }
+
+    public Stream<Usuario> obtenerTodasUsuarios() {
+        return usuarioRepository.obtenerTodosUsuarios();
+    }
+
     public boolean existeUsuarioById(int idUsuario) {
         if (idUsuario <= 0) {
             return false;
         }
         return usuarioRepository.existeUsuarioById(idUsuario);
-    }
-
-    public void eliminarUsuarioById(int idUsuario) {
-        usuarioRepository.eliminarUsuarioById(idUsuario);
-    }
-
-    public ObjetoRespuesta<Stream<Usuario>> obtenerTodasUsuarios() {
-        return new ObjetoRespuesta<>(
-                usuarioRepository.obtenerTodosUsuarios(),
-                "Listado");
     }
 
 }

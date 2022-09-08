@@ -18,7 +18,7 @@ public class UsuarioRolRepositoryImpl implements IUsuarioRolRepository {
     private final IUsuarioRolDao usuarioRolDao;
 
     @Override
-    public UsuarioRol guardarUsuarioRol(UsuarioRol usuarioRol) {
+    public UsuarioRol guardarRelacion(UsuarioRol usuarioRol) {
         UsuarioRolEntity usuarioRolEntity = mapperUsuarioRolRepository.usuarioRolToEntity(usuarioRol);
         return mapperUsuarioRolRepository
                 .entityToDomain(
@@ -43,7 +43,7 @@ public class UsuarioRolRepositoryImpl implements IUsuarioRolRepository {
     }
 
     @Override
-    public boolean existeUsuarioRol(int id) {
+    public boolean existeRelacion(int id) {
         return usuarioRolDao.existsById(id);
     }
 }

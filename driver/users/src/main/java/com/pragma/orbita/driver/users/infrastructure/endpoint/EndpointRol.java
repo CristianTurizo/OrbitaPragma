@@ -1,12 +1,13 @@
 package com.pragma.orbita.driver.users.infrastructure.endpoint;
 
-import com.pragma.orbita.driver.users.application.DTOConsulta.RolDTOConsulta;
-import com.pragma.orbita.driver.users.application.DTORespuesta.RolDTORespuesta;
+import com.pragma.orbita.driver.users.application.DTOConsulta.RolDtoConsulta;
+import com.pragma.orbita.driver.users.application.DTORespuesta.RolDtoRespuesta;
+import com.pragma.orbita.driver.users.application.respuesta.ObjetoRespuesta;
 import com.pragma.orbita.driver.users.application.service.RolService;
-import com.pragma.orbita.driver.users.domain.respuesta.ObjetoRespuestaDomain;
-import com.pragma.orbita.driver.users.infrastructure.respuesta.ObjetoRespuestaInfrastructure;
 import lombok.RequiredArgsConstructor;
+import org.aspectj.weaver.ast.Not;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -29,47 +30,51 @@ public class EndpointRol {
     private final RolService rolService;
 
     @PostMapping
-    public ObjetoRespuestaInfrastructure<RolDTORespuesta> guardarRol(@NotNull @RequestBody RolDTOConsulta rolDTOConsulta) {
-        ObjetoRespuestaDomain<RolDTORespuesta> rol = rolService.guardarRol(rolDTOConsulta);
+    public ResponseEntity<ObjetoRespuesta<RolDtoRespuesta>> guardarRol(@NotNull @RequestBody RolDtoConsulta rolDTOConsulta) {
+        ObjetoRespuesta<RolDtoRespuesta> rol = rolService.guardarRol(rolDTOConsulta);
 
         return rol.getDato() == null
-                ? new ObjetoRespuestaInfrastructure<>(HttpStatus.CONFLICT, null, rol.getMessage())
-                : new ObjetoRespuestaInfrastructure<>(HttpStatus.CREATED, rol.getDato(), rol.getMessage());
+                ? new ResponseEntity<>(HttpStatus.CONFLICT)
+                : new ResponseEntity<>(rol, HttpStatus.CREATED);
     }
 
     @GetMapping("/{idRol}")
-    public ObjetoRespuestaInfrastructure<RolDTORespuesta> buscarRolPorId(@NotNull @PathVariable int idRol) {
-        ObjetoRespuestaDomain<RolDTORespuesta> rol = rolService.buscarRolPorId(idRol);
+    public ResponseEntity<ObjetoRespuesta<RolDtoRespuesta>> buscarRolPorId(@NotNull @PathVariable int idRol) {
+        ObjetoRespuesta<RolDtoRespuesta> rol = rolService.buscarRolPorId(idRol);
 
         return rol.getDato() == null
-                ? new ObjetoRespuestaInfrastructure<>(HttpStatus.NOT_FOUND, null, rol.getMessage())
-                : new ObjetoRespuestaInfrastructure<>(HttpStatus.OK, rol.getDato(), rol.getMessage());
+                ? new ResponseEntity<>(HttpStatus.NOT_FOUND)
+                : new ResponseEntity<>(rol, HttpStatus.OK);
     }
 
-    @PutMapping
-    public ObjetoRespuestaInfrastructure<RolDTORespuesta> actualizarRol(@NotNull @RequestBody RolDTOConsulta rolDTOConsulta) {
-        ObjetoRespuestaDomain<RolDTORespuesta> rol = rolService.actualizarRol(rolDTOConsulta);
+    @PutMapping("/{idRol}")
+    public ResponseEntity<ObjetoRespuesta<RolDtoRespuesta>> actualizarRol(
+            @NotNull @RequestBody RolDtoConsulta rolDTOConsulta,
+            @NotNull @PathVariable int idRol
+    ) {
+        rolDTOConsulta.setIdRol(idRol);
+        ObjetoRespuesta<RolDtoRespuesta> rol = rolService.actualizarRol(rolDTOConsulta);
 
         return rol.getDato() == null
-                ? new ObjetoRespuestaInfrastructure<>(HttpStatus.CONFLICT, null, rol.getMessage())
-                : new ObjetoRespuestaInfrastructure<>(HttpStatus.OK, rol.getDato(), rol.getMessage());
+                ? new ResponseEntity<>(HttpStatus.CONFLICT)
+                : new ResponseEntity<>(rol, HttpStatus.OK);
     }
 
     @DeleteMapping("/{idRol}")
-    public ObjetoRespuestaInfrastructure<Integer> eliminarRolPorId(@NotNull @PathVariable int idRol) {
-        ObjetoRespuestaDomain<Integer> rol = rolService.eliminarRolById(idRol);
+    public ResponseEntity<ObjetoRespuesta<Object>> eliminarRolPorId(@NotNull @PathVariable int idRol) {
+        ObjetoRespuesta<Object> rol = rolService.eliminarRolById(idRol);
 
         return rol.getDato() == null
-                ? new ObjetoRespuestaInfrastructure<>(HttpStatus.CONFLICT, null, rol.getMessage())
-                : new ObjetoRespuestaInfrastructure<>(HttpStatus.OK, rol.getDato(), rol.getMessage());
+                ? new ResponseEntity<>(null, HttpStatus.CONFLICT)
+                : new ResponseEntity<>(rol, HttpStatus.NO_CONTENT);
     }
 
     @GetMapping
-    public ObjetoRespuestaInfrastructure<List<RolDTORespuesta>> buscarRolPorId() {
-        ObjetoRespuestaDomain<List<RolDTORespuesta>> rol = rolService.obtenerTodosRol();
+    public ResponseEntity<ObjetoRespuesta<List<RolDtoRespuesta>>> buscarRolPorId() {
+        ObjetoRespuesta<List<RolDtoRespuesta>> rol = rolService.obtenerTodosRol();
 
         return rol.getDato() == null
-                ? new ObjetoRespuestaInfrastructure<>(HttpStatus.NOT_FOUND, null, rol.getMessage())
-                : new ObjetoRespuestaInfrastructure<>(HttpStatus.OK, rol.getDato(), rol.getMessage());
+                ? new ResponseEntity<>(HttpStatus.NOT_FOUND)
+                : new ResponseEntity<>(rol, HttpStatus.OK);
     }
 }

@@ -1,12 +1,13 @@
 package com.pragma.orbita.driver.users.infrastructure.endpoint;
 
 import com.pragma.orbita.driver.users.application.DTOConsulta.UsuarioDtoConsulta;
-import com.pragma.orbita.driver.users.application.DTORespuesta.UsuarioDTORespuesta;
+import com.pragma.orbita.driver.users.application.DTORespuesta.UsuarioDtoRespuesta;
+import com.pragma.orbita.driver.users.application.respuesta.ObjetoRespuesta;
 import com.pragma.orbita.driver.users.application.service.UsuarioService;
-import com.pragma.orbita.driver.users.domain.respuesta.ObjetoRespuestaDomain;
 import com.pragma.orbita.driver.users.infrastructure.respuesta.ObjetoRespuestaInfrastructure;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -21,7 +22,7 @@ import javax.validation.constraints.NotNull;
 import java.util.List;
 
 @RestController
-@RequestMapping("user")
+@RequestMapping("usuario")
 @Validated
 @RequiredArgsConstructor
 public class EndpointUsuario {
@@ -29,48 +30,52 @@ public class EndpointUsuario {
     private final UsuarioService usuarioService;
 
     @PostMapping
-    public ObjetoRespuestaInfrastructure<UsuarioDTORespuesta> guardarUsuario(@NotNull @RequestBody UsuarioDtoConsulta usuarioDTOConsulta) {
-        ObjetoRespuestaDomain<UsuarioDTORespuesta> usuario = usuarioService.guardarUsuario(usuarioDTOConsulta);
+    public ResponseEntity<ObjetoRespuesta<UsuarioDtoRespuesta>> guardarUsuario(@NotNull @RequestBody UsuarioDtoConsulta usuarioDTOConsulta) {
+        ObjetoRespuesta<UsuarioDtoRespuesta> usuario = usuarioService.guardarUsuario(usuarioDTOConsulta);
 
         return usuario.getDato() == null
-                ? new ObjetoRespuestaInfrastructure<>(HttpStatus.CONFLICT, null, usuario.getMessage())
-                : new ObjetoRespuestaInfrastructure<>(HttpStatus.CREATED, usuario.getDato(), usuario.getMessage());
+                ? new ResponseEntity<>(HttpStatus.CONFLICT)
+                : new ResponseEntity<>(usuario, HttpStatus.CREATED);
     }
 
     @GetMapping("/{idUsuario}")
-    public ObjetoRespuestaInfrastructure<UsuarioDTORespuesta> obtenerUsuarioPorId(@NotNull @PathVariable int idUsuario) {
-        ObjetoRespuestaDomain<UsuarioDTORespuesta> usuario = usuarioService.buscarUsuarioPorId(idUsuario);
+    public ResponseEntity<ObjetoRespuesta<UsuarioDtoRespuesta>> obtenerUsuarioPorId(@NotNull @PathVariable int idUsuario) {
+        ObjetoRespuesta<UsuarioDtoRespuesta> usuario = usuarioService.buscarUsuarioPorId(idUsuario);
 
         return usuario.getDato() == null
-                ? new ObjetoRespuestaInfrastructure<>(HttpStatus.NOT_FOUND, null, usuario.getMessage())
-                : new ObjetoRespuestaInfrastructure<>(HttpStatus.OK, usuario.getDato(), usuario.getMessage());
+                ? new ResponseEntity<>(HttpStatus.NOT_FOUND)
+                : new ResponseEntity<>(usuario, HttpStatus.OK);
     }
 
-    @PutMapping
-    public ObjetoRespuestaInfrastructure<UsuarioDTORespuesta> editarUsuario(@NotNull @RequestBody UsuarioDtoConsulta usuarioDTOConsulta) {
-        ObjetoRespuestaDomain<UsuarioDTORespuesta> usuario = usuarioService.actualizarUsuario(usuarioDTOConsulta);
+    @PutMapping("/{idUsuario}")
+    public ResponseEntity<ObjetoRespuesta<UsuarioDtoRespuesta>> editarUsuario(
+            @NotNull @RequestBody UsuarioDtoConsulta usuarioDTOConsulta,
+            @NotNull @PathVariable int idUsuario
+    ) {
+        usuarioDTOConsulta.setIdUsuario(idUsuario);
+        ObjetoRespuesta<UsuarioDtoRespuesta> usuario = usuarioService.actualizarUsuario(usuarioDTOConsulta);
 
         return usuario.getDato() == null
-                ? new ObjetoRespuestaInfrastructure<>(HttpStatus.CONFLICT, null, usuario.getMessage())
-                : new ObjetoRespuestaInfrastructure<>(HttpStatus.OK, usuario.getDato(), usuario.getMessage());
+                ? new ResponseEntity<>(HttpStatus.CONFLICT)
+                : new ResponseEntity<>(usuario, HttpStatus.OK);
     }
 
     @DeleteMapping("/{idUsuario}")
-    public ObjetoRespuestaInfrastructure<Integer> eliminarUsuario(@NotNull @PathVariable int idUsuario) {
-        ObjetoRespuestaDomain<Integer> usuario = usuarioService.eliminarUsuarioById(idUsuario);
+    public ResponseEntity<ObjetoRespuesta<Object>> eliminarUsuario(@NotNull @PathVariable int idUsuario) {
+        ObjetoRespuesta<Object> usuario = usuarioService.eliminarUsuarioById(idUsuario);
 
         return usuario.getDato() == null
-                ? new ObjetoRespuestaInfrastructure<>(HttpStatus.CONFLICT, null, usuario.getMessage())
-                : new ObjetoRespuestaInfrastructure<>(HttpStatus.OK, usuario.getDato(), usuario.getMessage());
+                ? new ResponseEntity<>(usuario, HttpStatus.CONFLICT)
+                : new ResponseEntity<>(usuario, HttpStatus.NO_CONTENT);
     }
 
     @GetMapping
-    public ObjetoRespuestaInfrastructure<List<UsuarioDTORespuesta>> obtenerTodos() {
-        ObjetoRespuestaDomain<List<UsuarioDTORespuesta>> usuarios = usuarioService.obtenerTodasUsuarios();
+    public ResponseEntity<ObjetoRespuesta<List<UsuarioDtoRespuesta>>> obtenerTodos() {
+        ObjetoRespuesta<List<UsuarioDtoRespuesta>> usuarios = usuarioService.obtenerTodasUsuarios();
 
         return usuarios.getDato() == null
-                ? new ObjetoRespuestaInfrastructure<>(HttpStatus.NOT_FOUND, null, usuarios.getMessage())
-                : new ObjetoRespuestaInfrastructure<>(HttpStatus.FOUND, usuarios.getDato(), usuarios.getMessage());
+                ? new ResponseEntity<>(HttpStatus.NOT_FOUND)
+                : new ResponseEntity<>(usuarios, HttpStatus.OK);
     }
 
 }

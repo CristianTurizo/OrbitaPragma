@@ -12,6 +12,7 @@ import java.util.List;
 @AllArgsConstructor
 @Builder
 public class UsuarioRolDtoRespuesta {
-    private UsuarioDTORespuesta usuario;
-    private List<RolDtoRespuesta> roles;
+    private int idUsuarioRol;
+    private int idUsuario;
+    private int idRol;
 }
