@@ -10,9 +10,9 @@ public interface IRolMapper {
 
     RolDtoRespuesta rolToDtoRespuesta(Rol rol);
 
-    Rol respuestaDtoToRol (RolDtoRespuesta rolDTORespuesta);
+    Rol respuestaDtoToRol(RolDtoRespuesta rolDTORespuesta);
 
-    RolDtoConsulta rolToDtoConsulta (Rol rol);
+    RolDtoConsulta rolToDtoConsulta(Rol rol);
 
-    Rol consultaDtoToRol (RolDtoConsulta rolDTOConsulta);
+    Rol consultaDtoToRol(RolDtoConsulta rolDTOConsulta);
 }

@@ -5,7 +5,6 @@ import com.pragma.orbita.driver.users.application.DTORespuesta.RolDtoRespuesta;
 import com.pragma.orbita.driver.users.application.respuesta.ObjetoRespuesta;
 import com.pragma.orbita.driver.users.application.service.RolService;
 import lombok.RequiredArgsConstructor;
-import org.aspectj.weaver.ast.Not;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -65,7 +64,7 @@ public class EndpointRol {
         ObjetoRespuesta<Object> rol = rolService.eliminarRolById(idRol);
 
         return rol.getDato() == null
-                ? new ResponseEntity<>(null, HttpStatus.CONFLICT)
+                ? new ResponseEntity<>(rol, HttpStatus.CONFLICT)
                 : new ResponseEntity<>(rol, HttpStatus.NO_CONTENT);
     }
 

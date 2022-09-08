@@ -9,7 +9,7 @@ import org.mapstruct.factory.Mappers;
 public interface IMapperUsuarioRepository {
     IMapperUsuarioRepository INSTANCE = Mappers.getMapper(IMapperUsuarioRepository.class);
 
-    UsuarioEntity usuarioToEntity (Usuario usuario);
+    UsuarioEntity usuarioToEntity(Usuario usuario);
 
-    Usuario entityToUsuario (UsuarioEntity usuarioEntity);
+    Usuario entityToUsuario(UsuarioEntity usuarioEntity);
 }

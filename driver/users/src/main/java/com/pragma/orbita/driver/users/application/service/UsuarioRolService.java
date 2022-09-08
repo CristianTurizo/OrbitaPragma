@@ -1,12 +1,9 @@
 package com.pragma.orbita.driver.users.application.service;
 
-import com.pragma.orbita.driver.users.application.DTOConsulta.UsuarioDtoConsulta;
 import com.pragma.orbita.driver.users.application.DTOConsulta.UsuarioRolDtoConsulta;
-import com.pragma.orbita.driver.users.application.DTORespuesta.RolDtoRespuesta;
 import com.pragma.orbita.driver.users.application.DTORespuesta.UsuarioRolDtoRespuesta;
 import com.pragma.orbita.driver.users.application.mapper.mapInterface.IUsuarioRolMapper;
 import com.pragma.orbita.driver.users.application.respuesta.ObjetoRespuesta;
-import com.pragma.orbita.driver.users.domain.model.Usuario;
 import com.pragma.orbita.driver.users.domain.model.UsuarioRol;
 import com.pragma.orbita.driver.users.domain.usecase.RolUseCase;
 import com.pragma.orbita.driver.users.domain.usecase.UsuarioRolUseCase;
@@ -14,7 +11,6 @@ import com.pragma.orbita.driver.users.domain.usecase.UsuarioUseCase;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -40,8 +36,8 @@ public class UsuarioRolService {
         return relacion == null
                 ? new ObjetoRespuesta<>(null, "No se pudo guardar la relacion")
                 : new ObjetoRespuesta<>(
-                        usuarioRolMapper.usuarioRolToRespuesta(relacion),
-                        "Relacion guardada con exito");
+                usuarioRolMapper.usuarioRolToRespuesta(relacion),
+                "Relacion guardada con exito");
     }
 
     public ObjetoRespuesta<List<UsuarioRolDtoRespuesta>> buscarRelacionPorUsuario(int idUsuario) {
@@ -50,8 +46,8 @@ public class UsuarioRolService {
         return relacion.isEmpty()
                 ? new ObjetoRespuesta<>(null, "No se encontró la relacion")
                 : new ObjetoRespuesta<>(
-                        usuarioRolMapper.relacionesToRelacionesRespuesta(relacion),
-                        "Relacion encontrado");
+                usuarioRolMapper.relacionesToRelacionesRespuesta(relacion),
+                "Relacion encontrado");
     }
 
     public ObjetoRespuesta<Object> eliminarRelacion(int idUsuario, int idRol) {

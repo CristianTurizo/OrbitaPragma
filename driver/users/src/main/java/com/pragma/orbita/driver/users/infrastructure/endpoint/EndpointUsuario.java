@@ -4,7 +4,6 @@ import com.pragma.orbita.driver.users.application.DTOConsulta.UsuarioDtoConsulta
 import com.pragma.orbita.driver.users.application.DTORespuesta.UsuarioDtoRespuesta;
 import com.pragma.orbita.driver.users.application.respuesta.ObjetoRespuesta;
 import com.pragma.orbita.driver.users.application.service.UsuarioService;
-import com.pragma.orbita.driver.users.infrastructure.respuesta.ObjetoRespuestaInfrastructure;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

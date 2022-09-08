@@ -10,7 +10,7 @@ public interface IMapperRolRepository {
 
     IMapperRolRepository INSTANCE = Mappers.getMapper(IMapperRolRepository.class);
 
-    RolEntity rolToEntity (Rol rol);
+    RolEntity rolToEntity(Rol rol);
 
     Rol entityToRol(RolEntity rolEntity);
 }

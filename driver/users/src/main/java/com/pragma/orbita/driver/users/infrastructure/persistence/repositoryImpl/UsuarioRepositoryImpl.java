@@ -33,7 +33,7 @@ public class UsuarioRepositoryImpl implements IUsuarioRepository {
         return respuesta.isEmpty()
                 ? Optional.empty()
                 : Optional.of(IMapperUsuarioRepository.INSTANCE
-                        .entityToUsuario(respuesta.get()));
+                .entityToUsuario(respuesta.get()));
     }
 
     @Override
