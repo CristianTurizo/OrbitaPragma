@@ -14,7 +14,6 @@ public class UsuarioRolUseCase {
 
     private final IUsuarioRolRepository usuarioRolRepository;
 
-
     public UsuarioRol guardarRelacion(UsuarioRol usuarioRol) {
         return usuarioRolRepository.guardarRelacion(usuarioRol);
     }
@@ -23,7 +22,7 @@ public class UsuarioRolUseCase {
         if (idUsuario <= 0)
             return Collections.emptyList();
 
-        return usuarioRolRepository.obtenerPorUsuario(idUsuario);
+        return usuarioRolRepository.obtenerRelacionPorUsuario(idUsuario);
     }
 
     public UsuarioRol obtenerRelacionPorIds(int idUsuario, int idRol) {
@@ -44,11 +43,8 @@ public class UsuarioRolUseCase {
                 : idRelacion;
     }
 
-    private boolean existeRelacion(int idUsuario) {
-        if (idUsuario <= 0) {
-            return false;
-        }
-        return usuarioRolRepository.existeRelacion(idUsuario);
+    private boolean existeRelacion(int idRelacion) {
+        return usuarioRolRepository.existeRelacion(idRelacion);
     }
 
 }

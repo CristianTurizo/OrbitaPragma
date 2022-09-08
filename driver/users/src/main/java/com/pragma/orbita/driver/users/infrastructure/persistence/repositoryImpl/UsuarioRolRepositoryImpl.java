@@ -26,7 +26,7 @@ public class UsuarioRolRepositoryImpl implements IUsuarioRolRepository {
     }
 
     @Override
-    public List<UsuarioRol> obtenerPorUsuario(int id) {
+    public List<UsuarioRol> obtenerRelacionPorUsuario(int id) {
         return mapperUsuarioRolRepository.entitiesToDomain(
                 usuarioRolDao.findByIdUsuario(id));
     }

@@ -5,10 +5,7 @@ import com.pragma.orbita.driver.users.domain.repository.IUsuarioRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import javax.validation.ConstraintViolation;
-import javax.validation.Validator;
 import java.util.Optional;
-import java.util.Set;
 import java.util.stream.Stream;
 
 @Service
@@ -16,35 +13,22 @@ import java.util.stream.Stream;
 public class UsuarioUseCase {
 
     private final IUsuarioRepository usuarioRepository;
-    private final Validator validator;
-
 
     public Usuario guardarUsuario(Usuario usuario) {
-        Set<ConstraintViolation<Usuario>> validation = validator.validate(usuario);
-        if (!validation.isEmpty()) {
-            StringBuilder errores = new StringBuilder("Datos no válidos.");
-            errores.append("Errores: ");
-            validation.forEach(x -> {
-                errores.append(x.getMessage());
-                errores.append(", ");
-            });
-            return null;
-        }
-
         return usuarioRepository.guardarUsuario(usuario);
     }
 
-    public Usuario getUsuarioById(int idUsuario) {
+    public Usuario buscarUsarioPorId(int idUsuario) {
         if (idUsuario <= 0)
             return null;
 
-        Optional<Usuario> usuario = usuarioRepository.getUsuarioById(idUsuario);
+        Optional<Usuario> usuario = usuarioRepository.buscarUsuarioPorId(idUsuario);
         return usuario.isEmpty()
                 ? null
                 : usuario.get();
     }
 
-    public Integer eliminarUsuarioById(int idUsuario) {
+    public Integer eliminarUsuarioPorId(int idUsuario) {
         if (idUsuario <= 0)
             return null;
         if (!existeUsuarioById(idUsuario))
@@ -57,15 +41,12 @@ public class UsuarioUseCase {
                 : idUsuario;
     }
 
-    public Stream<Usuario> obtenerTodasUsuarios() {
-        return usuarioRepository.obtenerTodosUsuarios();
+    public boolean existeUsuarioById(int idUsuario) {
+        return usuarioRepository.existeUsuarioById(idUsuario);
     }
 
-    public boolean existeUsuarioById(int idUsuario) {
-        if (idUsuario <= 0) {
-            return false;
-        }
-        return usuarioRepository.existeUsuarioById(idUsuario);
+    public Stream<Usuario> obtenerTodosUsuarios() {
+        return usuarioRepository.obtenerTodosUsuarios();
     }
 
 }

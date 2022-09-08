@@ -8,11 +8,12 @@ public interface IUsuarioRolRepository {
 
     UsuarioRol guardarRelacion(UsuarioRol usuarioRol);
 
-    List<UsuarioRol> obtenerPorUsuario(int id);
+    List<UsuarioRol> obtenerRelacionPorUsuario(int id);
 
     UsuarioRol obtenerPorUsuarioYRol(int idUsuario, int idRol);
 
     void eliminarRelacion(int id);
 
     boolean existeRelacion(int id);
+
 }

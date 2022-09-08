@@ -16,7 +16,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.transaction.Transactional;
 import javax.validation.constraints.NotNull;
 import java.util.List;
 
@@ -24,14 +23,13 @@ import java.util.List;
 @RequestMapping("relacion")
 @Validated
 @RequiredArgsConstructor
-@Transactional
 public class EndpointUsuarioRol {
 
     private final UsuarioRolService usuarioRolService;
 
 
     @PostMapping
-    public ResponseEntity<ObjetoRespuesta<UsuarioRolDtoRespuesta>> guardarUsuario(@NotNull @RequestBody UsuarioRolDtoConsulta usuarioRolDtoConsulta) {
+    public ResponseEntity<ObjetoRespuesta<UsuarioRolDtoRespuesta>> guardarRelacion(@NotNull @RequestBody UsuarioRolDtoConsulta usuarioRolDtoConsulta) {
         ObjetoRespuesta<UsuarioRolDtoRespuesta> usuario = usuarioRolService.guardarUsuarioRol(usuarioRolDtoConsulta);
 
         return usuario.getDato() == null

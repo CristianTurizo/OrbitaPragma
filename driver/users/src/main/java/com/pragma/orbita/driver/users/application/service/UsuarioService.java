@@ -21,39 +21,40 @@ public class UsuarioService {
     private final UsuarioUseCase usuarioUseCase;
 
     public ObjetoRespuesta<UsuarioDtoRespuesta> guardarUsuario(UsuarioDtoConsulta usuarioDTOConsulta) {
-        Usuario usuario = usuarioMapper.consultaDtoToUsuario(usuarioDTOConsulta);
-        Usuario respuesta = usuarioUseCase.guardarUsuario(usuario);
+        Usuario respuesta = usuarioUseCase.guardarUsuario(
+                usuarioMapper.consultaDtoToUsuario(usuarioDTOConsulta));
 
         return respuesta == null
                 ? new ObjetoRespuesta<>(null, "No se pudo guardar el usuario")
                 : new ObjetoRespuesta<>(
-                usuarioMapper.usuarioToDtoRespuesta(respuesta),
-                "Usuario guardado con exito");
+                        usuarioMapper.usuarioToDtoRespuesta(respuesta),
+                        "Usuario guardado con exito");
     }
 
     public ObjetoRespuesta<UsuarioDtoRespuesta> buscarUsuarioPorId(int idUsuario) {
-        Usuario respuesta = usuarioUseCase.getUsuarioById(idUsuario);
+        Usuario respuesta = usuarioUseCase.buscarUsarioPorId(idUsuario);
 
         return respuesta == null
-                ? new ObjetoRespuesta<>(null, "No se encontró el usuario")
+                ? new ObjetoRespuesta<>()
                 : new ObjetoRespuesta<>(
-                usuarioMapper.usuarioToDtoRespuesta(respuesta),
-                "Usuario encontrado");
+                        usuarioMapper.usuarioToDtoRespuesta(respuesta),
+                        "Usuario encontrado");
     }
 
-    public ObjetoRespuesta<UsuarioDtoRespuesta> actualizarUsuario(UsuarioDtoConsulta usuarioDTOConsulta) {
-        Usuario usuario = usuarioMapper.consultaDtoToUsuario(usuarioDTOConsulta);
-        Usuario respuesta = usuarioUseCase.guardarUsuario(usuario);
+    public ObjetoRespuesta<UsuarioDtoRespuesta> actualizarUsuario(UsuarioDtoConsulta usuarioDTOConsulta, int idUsuario) {
+        usuarioDTOConsulta.setIdUsuario(idUsuario);
+        Usuario respuesta = usuarioUseCase.guardarUsuario(
+                usuarioMapper.consultaDtoToUsuario(usuarioDTOConsulta));
 
         return respuesta == null
-                ? new ObjetoRespuesta<>(null, "Ocurrió un error al actualizar los datos de la categoría")
+                ? new ObjetoRespuesta<>(null, "Ocurrió un error al actualizar los datos del usuario")
                 : new ObjetoRespuesta<>(
                 usuarioMapper.usuarioToDtoRespuesta(respuesta),
-                "Categoría actualizada con éxito");
+                "Usuario actualizado con éxito");
     }
 
     public ObjetoRespuesta<Object> eliminarUsuarioById(int idUsuario) {
-        Integer respuesta = usuarioUseCase.eliminarUsuarioById(idUsuario);
+        Integer respuesta = usuarioUseCase.eliminarUsuarioPorId(idUsuario);
 
         return respuesta == null
                 ? new ObjetoRespuesta<>(null, "No se pudo eliminar el usuario")
@@ -61,12 +62,12 @@ public class UsuarioService {
     }
 
     public ObjetoRespuesta<List<UsuarioDtoRespuesta>> obtenerTodasUsuarios() {
-        Stream<Usuario> usuarioStream = usuarioUseCase.obtenerTodasUsuarios();
+        Stream<Usuario> usuarioStream = usuarioUseCase.obtenerTodosUsuarios();
 
         List<UsuarioDtoRespuesta> usuarios = usuarioStream
                 .map(usuarioMapper::usuarioToDtoRespuesta)
                 .collect(Collectors.toList());
 
-        return new ObjetoRespuesta<>(usuarios, "Listado");
+        return new ObjetoRespuesta<>(usuarios, "Obtenidos todos los usuarios");
     }
 }

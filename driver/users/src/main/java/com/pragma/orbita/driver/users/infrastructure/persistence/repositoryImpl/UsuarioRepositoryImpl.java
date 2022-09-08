@@ -17,28 +17,25 @@ import java.util.stream.Stream;
 @RequiredArgsConstructor
 public class UsuarioRepositoryImpl implements IUsuarioRepository {
 
+    private final IMapperUsuarioRepository mapperUsuarioRepository;
     private final IUsuarioDao usuarioDao;
 
     @Override
     public Usuario guardarUsuario(Usuario usuario) {
-        UsuarioEntity usuarioEntity = IMapperUsuarioRepository.INSTANCE.usuarioToEntity(usuario);
-        return IMapperUsuarioRepository.INSTANCE
-                .entityToUsuario(
+        UsuarioEntity usuarioEntity = mapperUsuarioRepository.domainToEntity(usuario);
+        return mapperUsuarioRepository
+                .entityToDomain(
                         usuarioDao.save(usuarioEntity));
     }
 
     @Override
-    public Optional<Usuario> getUsuarioById(int idUsuario) {
+    public Optional<Usuario> buscarUsuarioPorId(int idUsuario) {
         Optional<UsuarioEntity> respuesta = usuarioDao.findById(idUsuario);
         return respuesta.isEmpty()
                 ? Optional.empty()
-                : Optional.of(IMapperUsuarioRepository.INSTANCE
-                .entityToUsuario(respuesta.get()));
-    }
-
-    @Override
-    public Boolean existeUsuarioById(int idUsuario) {
-        return usuarioDao.existsById(idUsuario);
+                : Optional.of(
+                        mapperUsuarioRepository.entityToDomain(
+                                respuesta.get()));
     }
 
     @Override
@@ -47,11 +44,16 @@ public class UsuarioRepositoryImpl implements IUsuarioRepository {
     }
 
     @Override
+    public boolean existeUsuarioById(int idUsuario) {
+        return usuarioDao.existsById(idUsuario);
+    }
+
+    @Override
     public Stream<Usuario> obtenerTodosUsuarios() {
         List<Usuario> usuarios = new ArrayList<>();
         usuarioDao.findAll().forEach(usuarioEntity ->
-                usuarios.add(IMapperUsuarioRepository.INSTANCE
-                        .entityToUsuario(usuarioEntity)
+                usuarios.add(
+                        mapperUsuarioRepository.entityToDomain(usuarioEntity)
                 )
         );
         return usuarios.stream();

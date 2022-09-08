@@ -27,23 +27,24 @@ public class RolService {
         return respuesta == null
                 ? new ObjetoRespuesta<>(null, "No se pudo guardar el Rol")
                 : new ObjetoRespuesta<>(
-                rolMapper.rolToDtoRespuesta(respuesta),
-                "Se guardó el rol con exito");
+                        rolMapper.rolToDtoRespuesta(respuesta),
+                        "Rol guardado con exito");
     }
 
     public ObjetoRespuesta<RolDtoRespuesta> buscarRolPorId(int idRol) {
-        Rol respuesta = rolUseCase.getRolById(idRol);
+        Rol respuesta = rolUseCase.buscarRolPorId(idRol);
 
         return respuesta == null
-                ? new ObjetoRespuesta<>(null, "No se encontró el Rol")
+                ? new ObjetoRespuesta<>()
                 : new ObjetoRespuesta<>(
-                rolMapper.rolToDtoRespuesta(respuesta),
-                "Rol encontrado");
+                        rolMapper.rolToDtoRespuesta(respuesta),
+                        "Rol encontrado");
     }
 
-    public ObjetoRespuesta<RolDtoRespuesta> actualizarRol(RolDtoConsulta rolDTOConsulta) {
-        Rol rol = rolMapper.consultaDtoToRol(rolDTOConsulta);
-        Rol respuesta = rolUseCase.guardarRol(rol);
+    public ObjetoRespuesta<RolDtoRespuesta> actualizarRol(RolDtoConsulta rolDTOConsulta, int idRol) {
+        rolDTOConsulta.setIdRol(idRol);
+        Rol respuesta = rolUseCase.guardarRol(
+                rolMapper.consultaDtoToRol(rolDTOConsulta));
 
         return respuesta == null
                 ? new ObjetoRespuesta<>(null, "Ocurrió un error al actualizar los datos del rol")
@@ -53,7 +54,7 @@ public class RolService {
     }
 
     public ObjetoRespuesta<Object> eliminarRolById(int idRol) {
-        Integer respuesta = rolUseCase.eliminarRolById(idRol);
+        Integer respuesta = rolUseCase.eliminarRolPorId(idRol);
 
         return respuesta == null
                 ? new ObjetoRespuesta<>(null, "No se pudo eliminar el Rol")
@@ -67,6 +68,6 @@ public class RolService {
                 .map(rolMapper::rolToDtoRespuesta)
                 .collect(Collectors.toList());
 
-        return new ObjetoRespuesta<>(rols, "Listado");
+        return new ObjetoRespuesta<>(rols, "Obtenidos todos los roles");
     }
 }

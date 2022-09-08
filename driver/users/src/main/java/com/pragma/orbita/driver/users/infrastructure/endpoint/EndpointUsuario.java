@@ -33,12 +33,12 @@ public class EndpointUsuario {
         ObjetoRespuesta<UsuarioDtoRespuesta> usuario = usuarioService.guardarUsuario(usuarioDTOConsulta);
 
         return usuario.getDato() == null
-                ? new ResponseEntity<>(HttpStatus.CONFLICT)
+                ? new ResponseEntity<>(usuario, HttpStatus.CONFLICT)
                 : new ResponseEntity<>(usuario, HttpStatus.CREATED);
     }
 
     @GetMapping("/{idUsuario}")
-    public ResponseEntity<ObjetoRespuesta<UsuarioDtoRespuesta>> obtenerUsuarioPorId(@NotNull @PathVariable int idUsuario) {
+    public ResponseEntity<ObjetoRespuesta<UsuarioDtoRespuesta>> buscarUsuarioPorId(@NotNull @PathVariable int idUsuario) {
         ObjetoRespuesta<UsuarioDtoRespuesta> usuario = usuarioService.buscarUsuarioPorId(idUsuario);
 
         return usuario.getDato() == null
@@ -47,12 +47,11 @@ public class EndpointUsuario {
     }
 
     @PutMapping("/{idUsuario}")
-    public ResponseEntity<ObjetoRespuesta<UsuarioDtoRespuesta>> editarUsuario(
+    public ResponseEntity<ObjetoRespuesta<UsuarioDtoRespuesta>> actualizarUsuario(
             @NotNull @RequestBody UsuarioDtoConsulta usuarioDTOConsulta,
             @NotNull @PathVariable int idUsuario
     ) {
-        usuarioDTOConsulta.setIdUsuario(idUsuario);
-        ObjetoRespuesta<UsuarioDtoRespuesta> usuario = usuarioService.actualizarUsuario(usuarioDTOConsulta);
+        ObjetoRespuesta<UsuarioDtoRespuesta> usuario = usuarioService.actualizarUsuario(usuarioDTOConsulta, idUsuario);
 
         return usuario.getDato() == null
                 ? new ResponseEntity<>(HttpStatus.CONFLICT)
@@ -60,12 +59,12 @@ public class EndpointUsuario {
     }
 
     @DeleteMapping("/{idUsuario}")
-    public ResponseEntity<ObjetoRespuesta<Object>> eliminarUsuario(@NotNull @PathVariable int idUsuario) {
+    public ResponseEntity<ObjetoRespuesta<Object>> eliminarUsuarioPorId(@NotNull @PathVariable int idUsuario) {
         ObjetoRespuesta<Object> usuario = usuarioService.eliminarUsuarioById(idUsuario);
 
         return usuario.getDato() == null
                 ? new ResponseEntity<>(usuario, HttpStatus.CONFLICT)
-                : new ResponseEntity<>(usuario, HttpStatus.NO_CONTENT);
+                : new ResponseEntity<>(usuario, HttpStatus.OK);
     }
 
     @GetMapping

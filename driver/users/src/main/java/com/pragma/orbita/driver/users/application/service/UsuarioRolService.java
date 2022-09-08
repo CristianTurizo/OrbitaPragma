@@ -22,32 +22,30 @@ public class UsuarioRolService {
     private final UsuarioUseCase usuarioUseCase;
     private final RolUseCase rolUseCase;
 
-
     public ObjetoRespuesta<UsuarioRolDtoRespuesta> guardarUsuarioRol(UsuarioRolDtoConsulta usuarioRolDtoConsulta) {
         if (!usuarioUseCase.existeUsuarioById(usuarioRolDtoConsulta.getIdUsuario()))
             return new ObjetoRespuesta<>(null, "No existe el usuario");
         if (!rolUseCase.existeRolById(usuarioRolDtoConsulta.getIdRol()))
             return new ObjetoRespuesta<>(null, "No existe el rol");
 
-
-        UsuarioRol usuarioRol = usuarioRolMapper.consultaDtoToUsuarioRol(usuarioRolDtoConsulta);
-        UsuarioRol relacion = usuarioRolUseCase.guardarRelacion(usuarioRol);
+        UsuarioRol relacion = usuarioRolUseCase.guardarRelacion(
+                usuarioRolMapper.consultaDtoToUsuarioRol(usuarioRolDtoConsulta));
 
         return relacion == null
                 ? new ObjetoRespuesta<>(null, "No se pudo guardar la relacion")
                 : new ObjetoRespuesta<>(
-                usuarioRolMapper.usuarioRolToRespuesta(relacion),
-                "Relacion guardada con exito");
+                        usuarioRolMapper.usuarioRolToRespuesta(relacion),
+                        "Relacion guardada con exito");
     }
 
     public ObjetoRespuesta<List<UsuarioRolDtoRespuesta>> buscarRelacionPorUsuario(int idUsuario) {
         List<UsuarioRol> relacion = usuarioRolUseCase.obtenerPorUsuario(idUsuario);
 
         return relacion.isEmpty()
-                ? new ObjetoRespuesta<>(null, "No se encontró la relacion")
+                ? new ObjetoRespuesta<>()
                 : new ObjetoRespuesta<>(
-                usuarioRolMapper.relacionesToRelacionesRespuesta(relacion),
-                "Relacion encontrado");
+                        usuarioRolMapper.relacionesToRelacionesRespuesta(relacion),
+                        "Relacion encontrada");
     }
 
     public ObjetoRespuesta<Object> eliminarRelacion(int idUsuario, int idRol) {
@@ -59,7 +57,7 @@ public class UsuarioRolService {
 
         return respuesta == null
                 ? new ObjetoRespuesta<>(null, "No se pudo eliminar la relacion")
-                : new ObjetoRespuesta<>(idRol, "Eliminado con exito");
+                : new ObjetoRespuesta<>(idRol, "Relacion eliminada con exito");
     }
 
 }

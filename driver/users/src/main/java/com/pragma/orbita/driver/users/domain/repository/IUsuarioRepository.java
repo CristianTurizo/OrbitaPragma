@@ -9,11 +9,12 @@ public interface IUsuarioRepository {
 
     Usuario guardarUsuario(Usuario usuario);
 
-    Optional<Usuario> getUsuarioById(int idUsuario);
-
-    Boolean existeUsuarioById(int idUsuario);
+    Optional<Usuario> buscarUsuarioPorId(int idUsuario);
 
     void eliminarUsuarioById(int idUsuario);
 
+    boolean existeUsuarioById(int idUsuario);
+
     Stream<Usuario> obtenerTodosUsuarios();
+
 }

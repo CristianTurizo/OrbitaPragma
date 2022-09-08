@@ -33,7 +33,7 @@ public class EndpointRol {
         ObjetoRespuesta<RolDtoRespuesta> rol = rolService.guardarRol(rolDTOConsulta);
 
         return rol.getDato() == null
-                ? new ResponseEntity<>(HttpStatus.CONFLICT)
+                ? new ResponseEntity<>(rol, HttpStatus.CONFLICT)
                 : new ResponseEntity<>(rol, HttpStatus.CREATED);
     }
 
@@ -51,8 +51,7 @@ public class EndpointRol {
             @NotNull @RequestBody RolDtoConsulta rolDTOConsulta,
             @NotNull @PathVariable int idRol
     ) {
-        rolDTOConsulta.setIdRol(idRol);
-        ObjetoRespuesta<RolDtoRespuesta> rol = rolService.actualizarRol(rolDTOConsulta);
+        ObjetoRespuesta<RolDtoRespuesta> rol = rolService.actualizarRol(rolDTOConsulta, idRol);
 
         return rol.getDato() == null
                 ? new ResponseEntity<>(HttpStatus.CONFLICT)
@@ -65,11 +64,11 @@ public class EndpointRol {
 
         return rol.getDato() == null
                 ? new ResponseEntity<>(rol, HttpStatus.CONFLICT)
-                : new ResponseEntity<>(rol, HttpStatus.NO_CONTENT);
+                : new ResponseEntity<>(rol, HttpStatus.OK);
     }
 
     @GetMapping
-    public ResponseEntity<ObjetoRespuesta<List<RolDtoRespuesta>>> buscarRolPorId() {
+    public ResponseEntity<ObjetoRespuesta<List<RolDtoRespuesta>>> obtenerTodos() {
         ObjetoRespuesta<List<RolDtoRespuesta>> rol = rolService.obtenerTodosRol();
 
         return rol.getDato() == null

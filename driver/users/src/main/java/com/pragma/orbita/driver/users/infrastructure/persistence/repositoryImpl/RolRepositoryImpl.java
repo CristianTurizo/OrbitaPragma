@@ -17,32 +17,25 @@ import java.util.stream.Stream;
 @RequiredArgsConstructor
 public class RolRepositoryImpl implements IRolRepository {
 
+    private final IMapperRolRepository mapperRolRepository;
     private final IRolDao rolDao;
 
     @Override
-    public Optional<Rol> getRolById(int idRol) {
-        Optional<RolEntity> respuesta = rolDao.findById(idRol);
-        if (respuesta.isEmpty()) {
-            return Optional.empty();
-        }
-        return Optional.of(
-                IMapperRolRepository.INSTANCE
-                        .entityToRol(respuesta.get())
-        );
-    }
-
-    @Override
     public Rol guardarRol(Rol rol) {
-        RolEntity rolEntity = IMapperRolRepository.INSTANCE.rolToEntity(rol);
-        return IMapperRolRepository.INSTANCE
-                .entityToRol(
-                        rolDao.save(rolEntity)
-                );
+        RolEntity rolEntity = mapperRolRepository.domainToEntity(rol);
+        return mapperRolRepository
+                .entityToDomain(
+                        rolDao.save(rolEntity));
     }
 
     @Override
-    public Boolean existeRolById(int idRol) {
-        return rolDao.existsById(idRol);
+    public Optional<Rol> buscarRolPorId(int idRol) {
+        Optional<RolEntity> respuesta = rolDao.findById(idRol);
+        return respuesta.isEmpty()
+                ? Optional.empty()
+                : Optional.of(
+                        mapperRolRepository.entityToDomain(
+                                respuesta.get()));
     }
 
     @Override
@@ -51,11 +44,16 @@ public class RolRepositoryImpl implements IRolRepository {
     }
 
     @Override
+    public boolean existeRolById(int idRol) {
+        return rolDao.existsById(idRol);
+    }
+
+    @Override
     public Stream<Rol> obtenerTodosRol() {
         List<Rol> rolList = new ArrayList<>();
         rolDao.findAll().forEach(rolEntity ->
                 rolList.add(
-                        IMapperRolRepository.INSTANCE.entityToRol(rolEntity)
+                        mapperRolRepository.entityToDomain(rolEntity)
                 ));
         return rolList.stream();
     }

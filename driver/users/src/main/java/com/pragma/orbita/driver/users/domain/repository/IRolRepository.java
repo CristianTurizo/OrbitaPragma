@@ -6,14 +6,14 @@ import java.util.Optional;
 import java.util.stream.Stream;
 
 public interface IRolRepository {
-
-    Optional<Rol> getRolById(int idRol);
-
     Rol guardarRol(Rol rol);
 
-    Boolean existeRolById(int idRol);
+    Optional<Rol> buscarRolPorId(int idRol);
 
     void eliminarRolById(int idRol);
 
+    boolean existeRolById(int idRol);
+
     Stream<Rol> obtenerTodosRol();
+
 }
