@@ -19,8 +19,9 @@ public class RolUseCase {
     }
 
     public Rol buscarRolPorId(int idRol) {
-        if (idRol <= 0)
+        if (idRol <= 0) {
             return null;
+        }
 
         Optional<Rol> rol = rolRepository.buscarRolPorId(idRol);
         return rol.isEmpty()
@@ -29,10 +30,12 @@ public class RolUseCase {
     }
 
     public Integer eliminarRolPorId(int idRol) {
-        if (idRol <= 0)
+        if (idRol <= 0) {
             return null;
-        if (!existeRolById(idRol))
+        }
+        if (!existeRolById(idRol)) {
             return null;
+        }
 
         rolRepository.eliminarRolById(idRol);
 

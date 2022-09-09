@@ -19,8 +19,9 @@ public class UsuarioUseCase {
     }
 
     public Usuario buscarUsarioPorId(int idUsuario) {
-        if (idUsuario <= 0)
+        if (idUsuario <= 0) {
             return null;
+        }
 
         Optional<Usuario> usuario = usuarioRepository.buscarUsuarioPorId(idUsuario);
         return usuario.isEmpty()
@@ -29,10 +30,12 @@ public class UsuarioUseCase {
     }
 
     public Integer eliminarUsuarioPorId(int idUsuario) {
-        if (idUsuario <= 0)
+        if (idUsuario <= 0) {
             return null;
-        if (!existeUsuarioById(idUsuario))
+        }
+        if (!existeUsuarioById(idUsuario)) {
             return null;
+        }
 
         usuarioRepository.eliminarUsuarioById(idUsuario);
 

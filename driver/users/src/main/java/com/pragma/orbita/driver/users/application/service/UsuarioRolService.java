@@ -23,10 +23,12 @@ public class UsuarioRolService {
     private final RolUseCase rolUseCase;
 
     public ObjetoRespuesta<UsuarioRolDtoRespuesta> guardarUsuarioRol(UsuarioRolDtoConsulta usuarioRolDtoConsulta) {
-        if (!usuarioUseCase.existeUsuarioById(usuarioRolDtoConsulta.getIdUsuario()))
+        if (!usuarioUseCase.existeUsuarioById(usuarioRolDtoConsulta.getIdUsuario())) {
             return new ObjetoRespuesta<>(null, "No existe el usuario");
-        if (!rolUseCase.existeRolById(usuarioRolDtoConsulta.getIdRol()))
+        }
+        if (!rolUseCase.existeRolById(usuarioRolDtoConsulta.getIdRol())) {
             return new ObjetoRespuesta<>(null, "No existe el rol");
+        }
 
         UsuarioRol relacion = usuarioRolUseCase.guardarRelacion(
                 usuarioRolMapper.consultaDtoToUsuarioRol(usuarioRolDtoConsulta));
@@ -50,8 +52,9 @@ public class UsuarioRolService {
 
     public ObjetoRespuesta<Object> eliminarRelacion(int idUsuario, int idRol) {
         UsuarioRol relacion = usuarioRolUseCase.obtenerRelacionPorIds(idUsuario, idRol);
-        if (relacion == null)
+        if (relacion == null) {
             return new ObjetoRespuesta<>(null, "La relacion no existe");
+        }
 
         Integer respuesta = usuarioRolUseCase.eliminarPorId(relacion.getIdUsuarioRol());
 

@@ -19,23 +19,25 @@ public class UsuarioRolUseCase {
     }
 
     public List<UsuarioRol> obtenerPorUsuario(int idUsuario) {
-        if (idUsuario <= 0)
+        if (idUsuario <= 0) {
             return Collections.emptyList();
+        }
 
         return usuarioRolRepository.obtenerRelacionPorUsuario(idUsuario);
     }
 
     public UsuarioRol obtenerRelacionPorIds(int idUsuario, int idRol) {
-        if (idUsuario <= 0 || idRol <= 0)
+        if (idUsuario <= 0 || idRol <= 0) {
             return null;
+        }
 
         return usuarioRolRepository.obtenerPorUsuarioYRol(idUsuario, idRol);
     }
 
     public Integer eliminarPorId(int idRelacion) {
-        if (idRelacion <= 0)
+        if (idRelacion <= 0) {
             return null;
-
+        }
         usuarioRolRepository.eliminarRelacion(idRelacion);
 
         return existeRelacion(idRelacion)
