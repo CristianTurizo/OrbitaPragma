@@ -1,6 +1,9 @@
 server:
   port: 8081
 
+feign:
+  microservice:
+    users: localhost:8080/usuario
 
 spring:
   datasource:

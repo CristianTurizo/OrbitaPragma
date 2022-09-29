@@ -10,7 +10,7 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 @RequiredArgsConstructor
-public class IBarrioRepositoryImpl implements IBarrioRepository {
+public class BarrioRepositoryImpl implements IBarrioRepository {
 
     private final IMapperBarrioRepository mapperBarrioRepository;
     private final IBarrioDao barrioDao;
