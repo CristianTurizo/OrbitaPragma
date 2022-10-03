@@ -7,4 +7,6 @@ public interface IBarrioRepository {
     Barrio guardarBarrio(Barrio barrio);
 
     Barrio buscarBarrioPorNombre(String nombreBarrio);
+
+    Barrio buscarBarrioPorId(int idBarrio);
 }

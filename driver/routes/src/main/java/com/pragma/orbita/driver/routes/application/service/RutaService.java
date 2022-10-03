@@ -6,8 +6,10 @@ import com.pragma.orbita.driver.routes.application.dto.UsuarioDto;
 import com.pragma.orbita.driver.routes.application.mapper.IRutaBarrioMapper;
 import com.pragma.orbita.driver.routes.application.mapper.IRutaMapper;
 import com.pragma.orbita.driver.routes.application.respuesta.ObjetoRespuesta;
+import com.pragma.orbita.driver.routes.domain.model.Barrio;
 import com.pragma.orbita.driver.routes.domain.model.Ruta;
 import com.pragma.orbita.driver.routes.domain.model.RutaBarrio;
+import com.pragma.orbita.driver.routes.domain.usecase.BarrioUseCase;
 import com.pragma.orbita.driver.routes.domain.usecase.RutaBarrioUseCase;
 import com.pragma.orbita.driver.routes.domain.usecase.RutaUseCase;
 import com.pragma.orbita.driver.routes.infraestructure.feignclient.IUsuarioFeing;
@@ -25,9 +27,10 @@ public class RutaService {
 
     private final IRutaMapper rutaMapper;
     private final IRutaBarrioMapper rutaBarrioMapper;
+    private final IUsuarioFeing usuarioFeing;
     private final RutaUseCase rutaUseCase;
     private final RutaBarrioUseCase rutaBarrioUseCase;
-    private final IUsuarioFeing usuarioFeing;
+    private final BarrioUseCase barrioUseCase;
 
     @Transactional
     public ObjetoRespuesta<RutaDto> guardarRuta(RutaDto rutaDto) {
@@ -92,6 +95,12 @@ public class RutaService {
     private RutaDto crearRutaDtoRespuesta(Ruta ruta, List<RutaBarrio> rutaBarrioList) {
         RutaDto rutaCreada = rutaMapper.toDto(ruta);
         List<RutaBarrioDto> rutaBarrioDtoList = rutaBarrioMapper.toDtoList(rutaBarrioList);
+
+        rutaBarrioDtoList.forEach(rutaBarrioDto -> {
+                    Barrio barrio = barrioUseCase.buscarBarrioPorId(rutaBarrioDto.getIdBarrio());
+                    rutaBarrioDto.setNombreBarrio(barrio.getNombre());
+                }
+        );
 
         rutaCreada.setRutaBarrioList(rutaBarrioDtoList);
 

@@ -8,6 +8,8 @@ import com.pragma.orbita.driver.routes.infraestructure.persistence.mapper.IMappe
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
+import java.util.Optional;
+
 @Repository
 @RequiredArgsConstructor
 public class BarrioRepositoryImpl implements IBarrioRepository {
@@ -26,5 +28,13 @@ public class BarrioRepositoryImpl implements IBarrioRepository {
     public Barrio buscarBarrioPorNombre(String nombreBarrio) {
         return mapperBarrioRepository.toDomain(
                 barrioDao.findByNombre(nombreBarrio));
+    }
+
+    @Override
+    public Barrio buscarBarrioPorId(int idBarrio) {
+        Optional<BarrioEntity> barrioEntity = barrioDao.findById(idBarrio);
+        return barrioEntity.isEmpty()
+                ? null
+                : mapperBarrioRepository.toDomain(barrioEntity.get());
     }
 }

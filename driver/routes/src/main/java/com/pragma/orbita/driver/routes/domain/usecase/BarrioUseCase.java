@@ -18,4 +18,8 @@ public class BarrioUseCase {
     public Barrio buscarBarrioPorNombre(String nombreBarrio) {
         return barrioRepository.buscarBarrioPorNombre(nombreBarrio);
     }
+
+    public Barrio buscarBarrioPorId(int idBarrio){
+        return barrioRepository.buscarBarrioPorId(idBarrio);
+    }
 }
