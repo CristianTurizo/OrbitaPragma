@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.validation.constraints.NotNull;
+import java.util.List;
 
 @Setter
 @Getter
@@ -20,4 +21,5 @@ public class RutaDto {
     private int idUsuario;
     @NotNull
     private int cupos;
+    private List<RutaBarrioDto> rutaBarrioList;
 }

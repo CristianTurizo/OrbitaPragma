@@ -13,4 +13,6 @@ public interface IRutaMapper {
         Ruta toDomain(RutaDto rutaDto);
 
         List<RutaDto> toDtoList(List<Ruta> rutaList);
+
+
 }
