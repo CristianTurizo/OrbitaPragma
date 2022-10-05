@@ -19,6 +19,7 @@ import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -38,13 +39,20 @@ public class RutaService {
         if (!usuarioRespuesta.getStatusCode().is2xxSuccessful()) {
             return new ObjetoRespuesta<>(null, "El usuario al que desea asociar la ruta no existe");
         }
+        if (rutaDto.getRutaBarrioList().size() < 2) {
+            return new ObjetoRespuesta<>(null, "Se necesitan al menos 2 barrios");
+        }
+        if (hayBarriosDuplicados(rutaDto.getRutaBarrioList())) {
+            return new ObjetoRespuesta<>(null, "No se puede duplicar barrios");
+        }
+
 
         Ruta nuevaRuta = rutaUseCase.guardarRuta(
                 rutaMapper.toDomain(rutaDto));
 
         List<RutaBarrio> rutaBarrioList = guardarRelacion(rutaDto.getRutaBarrioList(), nuevaRuta.getIdRuta());
 
-        return nuevaRuta == null
+        return rutaBarrioList.isEmpty()
                 ? new ObjetoRespuesta<>(null, "No se puedo guardar el ruta")
                 : new ObjetoRespuesta<>(
                 crearRutaDtoRespuesta(nuevaRuta, rutaBarrioList),
@@ -80,6 +88,14 @@ public class RutaService {
         return new ObjetoRespuesta<>(
                 rutaDtoRespuestaList,
                 "Ruta encontrada con exito");
+    }
+
+    private boolean hayBarriosDuplicados(List<RutaBarrioDto> rutaBarrioDtoList) {
+        Set<Integer> barriosNoRepetidos = rutaBarrioDtoList.stream()
+                .map(RutaBarrioDto::getIdBarrio)
+                .collect(Collectors.toSet());
+
+        return barriosNoRepetidos.size() != rutaBarrioDtoList.size();
     }
 
     private List<RutaBarrio> guardarRelacion(List<RutaBarrioDto> rutaBarrioList, int idRuta) {
